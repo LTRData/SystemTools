@@ -27,7 +27,7 @@ namespace SessionPowerSaver
 
         private static void LogWrite(string message)
         {
-            message = $"{DateTime.UtcNow:o} {message}";
+            message = $"{DateTime.UtcNow:o} Thread {Thread.CurrentThread.ManagedThreadId:X5} {message}";
 
             ThreadPool.QueueUserWorkItem(message =>
             {
