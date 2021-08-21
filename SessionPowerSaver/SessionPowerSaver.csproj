@@ -28,14 +28,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="LTRLib.IO.WTS.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="LTRLib.IO.WTS.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Reference Include="LTRLib40">
       <HintPath>..\..\LTRLib\$(Configuration)\$(TargetFramework)\LTRLib40.dll</HintPath>
       <Private>true</Private>
