@@ -54,7 +54,7 @@ namespace telnets
                     remote_host = args[args.Length - 1];
                 }
 
-                Console.WriteLine("Connecting to '" + remote_host + "' at port " + remote_port.ToString());
+                Console.WriteLine($"Connecting to '{remote_host}' at port {remote_port}");
 
                 var remote_socket = IOSupport.OpenTcpIpSocket(remote_host, remote_port);
                 remote_socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.NoDelay, true);
@@ -82,7 +82,7 @@ namespace telnets
 
                 var telnet_arguments = options.Concat(new[] { IPAddress.Loopback.ToString(), local_port.ToString() }).Join(" ");
 
-                Console.WriteLine("Starting '" + telnet_exe + "' with arguments '" + telnet_arguments + "'");
+                Console.WriteLine($"Starting '{telnet_exe}' with arguments '{telnet_arguments}'");
 
                 var telnet_start_info = new ProcessStartInfo
                 {
