@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "AppxActivate": {
+      "commandName": "Project",
+      "commandLineArgs": "TEST"
+    }
+  }
+}

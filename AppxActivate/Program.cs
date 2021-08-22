@@ -10,14 +10,14 @@ namespace Win8
     [ComImport, Guid("2e941141-7f97-4756-ba1d-9decde894a3d"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     interface IApplicationActivationManager
     {
-        IntPtr ActivateApplication([In] string appUserModelId, [In] string arguments, [In] uint options, out uint processId);
+        IntPtr ActivateApplication(string appUserModelId, string arguments, uint options, out uint processId);
     }
 
     [ComImport, Guid("45BA127D-10A8-46EA-8AB7-56EA9078943C")]//Application Activation Manager
     public class ApplicationActivationManager : IApplicationActivationManager
     {
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)/*, PreserveSig*/]
-        public extern IntPtr ActivateApplication([In] string appUserModelId, [In] string arguments, [In] uint options, out uint processId);
+        public extern IntPtr ActivateApplication(string appUserModelId, string arguments, uint options, out uint processId);
 
     }
 
@@ -32,15 +32,21 @@ namespace Win8
             }
         }
 
-        public static int Main(string[] args)
+        public static int Main(params string[] args)
         {
+            if (args == null || args.Length == 0)
+            {
+                Console.WriteLine("Package name required.");
+                return -1;
+            }
+
             try
             {
                 var appman = new ApplicationActivationManager();
 
                 string app_args = null;
 
-                if (args.Length > 1)
+                if (args.Length > 2)
                 {
                     app_args = string.Join(" ", args.Skip(1).Select(p => $"\"{p}\""));
                 }
@@ -57,7 +63,7 @@ namespace Win8
                 Console.Error.WriteLine(
                     string.Join(" -> ", ex.EnumerateMessages()));
 
-                return -1;
+                return ex.HResult;
             }
         }
     }
