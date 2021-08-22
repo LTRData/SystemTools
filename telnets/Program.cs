@@ -27,7 +27,7 @@ namespace telnets
             Console.ResetColor();
         }
 
-        public static int Main(string[] args)
+        public static int Main(params string[] args)
         {
             var dispobjs = new DisposableList<IDisposable>();
 
