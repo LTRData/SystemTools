@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "PowerShellFs": {
+      "commandName": "Project"
+    }
+  }
+}
