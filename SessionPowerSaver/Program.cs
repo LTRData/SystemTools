@@ -1,5 +1,5 @@
 ﻿using LTRLib.IO;
-using LTRLib.LTRGeneric;
+using LTRLib.Extensions;
 using LTRLib.Services.WTS;
 using Microsoft.Win32;
 using System;
@@ -42,7 +42,7 @@ namespace SessionPowerSaver
 
         static Program() => AppDomain.CurrentDomain.UnhandledException += (sender, e) => LogWrite(e.ExceptionObject.ToString());
 
-        public static void Main()
+        public static int Main()
         {
             LogWrite("Starting up SessionPowerSaver");
 
@@ -63,11 +63,48 @@ namespace SessionPowerSaver
             {
             }
 
+            var suspended = new ConcurrentDictionary<int, DateTime>();
+
+            var rc = 0;
+
+            try
+            {
+                ServiceLoop(currentProcessTree, suspended);
+            }
+            catch (Exception ex)
+            {
+                LogWrite(ex.ToString());
+                rc = ex.HResult;
+            }
+
+            Parallel.ForEach(suspended, item =>
+            {
+                try
+                {
+                    using var suspended_process = SafeOpenProcess(item.Key);
+
+                    if (suspended_process != null && item.Value == suspended_process.StartTime)
+                    {
+                        LogWrite($"Resuming process {suspended_process.Id} ({suspended_process.ProcessName})");
+                        suspended_process.Resume();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogWrite($"Failed to resume process {item.Key}: {ex}");
+                }
+            });
+
+            LogWrite($"Exiting SessionPowerSaver 0x{rc:X}");
+
+            return rc;
+        }
+
+        private static void ServiceLoop(IList<int> currentProcessTree, ConcurrentDictionary<int, DateTime> suspended)
+        {
             using var sync = new ManualResetEvent(initialState: true);
 
             SystemEvents.SessionSwitch += (_, _) => sync.Set();
-
-            var suspended = new ConcurrentDictionary<int, DateTime>();
 
             for (; ; )
             {
@@ -84,59 +121,60 @@ namespace SessionPowerSaver
                     .Where(p => p.UserSid == CurrentUser.User &&
                         !currentProcessTree.Contains(p.ProcessId) &&
                         p.TotalProcessorTime.TotalMinutes > 6d), p =>
-                {
-                    if (sync.WaitOne(0))
-                    {
-                        return;
-                    }
-
-                    if (suspended.TryGetValue(p.ProcessId, out var item))
-                    {
-                        using var suspended_process = Process.GetProcessById(p.ProcessId);
-
-                        if (item != suspended_process.StartTime)
                         {
-                            LogWrite($"Previous process {p.ProcessId} replaced with a new process");
-                            suspended.TryRemove(p.ProcessId, out item);
-                        }
-                        else if (is_connected)
-                        {
-                            LogWrite($"Resuming process {p.ProcessId} ({p.ProcessName})");
-                            suspended_process.Resume();
-                            suspended.TryRemove(p.ProcessId, out item);
-                            return;
-                        }
-                        else
-                        {
-                            return;
-                        }
-                    }
+                            if (sync.WaitOne(0))
+                            {
+                                return;
+                            }
 
-                    if (is_connected)
-                    {
-                        return;
-                    }
+                            if (suspended.TryGetValue(p.ProcessId, out var item))
+                            {
+                                using var suspended_process = SafeOpenProcess(p.ProcessId);
 
-                    using var process = Process.GetProcessById(p.ProcessId);
+                                if (suspended_process == null || item != suspended_process.StartTime)
+                                {
+                                    LogWrite($"Previous process {p.ProcessId} with start time {item} no longer exists");
+                                    suspended.TryRemove(p.ProcessId, out item);
+                                }
+                                else if (is_connected)
+                                {
+                                    LogWrite($"Resuming process {p.ProcessId} ({p.ProcessName})");
+                                    suspended_process.Resume();
+                                    suspended.TryRemove(p.ProcessId, out item);
+                                    return;
+                                }
+                                else
+                                {
+                                    return;
+                                }
+                            }
 
-                    if (process.MainWindowHandle == IntPtr.Zero ||
-                        !process.Responding)
-                    {
-                        return;
-                    }
+                            if (is_connected)
+                            {
+                                return;
+                            }
 
-                    var process_time = DateTime.Now - process.StartTime;
+                            using var process = SafeOpenProcess(p.ProcessId);
 
-                    var cpu = p.TotalProcessorTime.TotalMilliseconds / process_time.TotalMilliseconds;
+                            if (process == null ||
+                                process.MainWindowHandle == IntPtr.Zero ||
+                                !process.Responding)
+                            {
+                                return;
+                            }
 
-                    if (cpu > 0.1)
-                    {
-                        LogWrite($"Process {p.ProcessId} ({p.ProcessName}, '{process.MainWindowTitle}') CPU usage is {100 * cpu:0.0}%. Suspending...");
+                            var process_time = DateTime.Now - process.StartTime;
 
-                        process.Suspend();
-                        suspended[p.ProcessId] = process.StartTime;
-                    }
-                });
+                            var cpu = p.TotalProcessorTime.TotalMilliseconds / process_time.TotalMilliseconds;
+
+                            if (cpu > 0.1)
+                            {
+                                LogWrite($"Process {p.ProcessId} ({p.ProcessName}, '{process.MainWindowTitle}') CPU usage is {100 * cpu:0.0}%. Suspending...");
+
+                                process.Suspend();
+                                suspended[p.ProcessId] = process.StartTime;
+                            }
+                        });
 
                 LogWrite("Waiting");
 
@@ -148,6 +186,19 @@ namespace SessionPowerSaver
                 {
                     LogWrite("Timeout");
                 }
+            }
+        }
+
+        private static Process SafeOpenProcess(int processId)
+        {
+            try
+            {
+                return Process.GetProcessById(processId);
+            }
+            catch (Exception ex)
+            {
+                LogWrite($"Failed to open process {processId}: {ex.JoinMessages(" -> ")}");
+                return null;
             }
         }
     }
