@@ -69,7 +69,7 @@ namespace GetProductKey
 
 #if WINDOWS || NETFRAMEWORK
             var online_root_keys = new ConcurrentBag<RegistryKey>();
-            Task<string> hardware_prodct_key = null;
+            Task<string> hardware_product_key = null;
 #endif
             var offline_root_keys = new ConcurrentBag<DiscUtilsRegistryKey>();
             var value_getters = new ConcurrentBag<KeyValuePair<string, Func<string, object>>>();
@@ -83,15 +83,9 @@ namespace GetProductKey
                 online_root_keys.Add(key);
                 value_getters.Add(new($@"\\{Environment.MachineName}", key.GetValue));
 
-                hardware_prodct_key = Task.Factory.StartNew(() =>
-                {
-                    var service = SoftwareLicensingService.GetInstances().OfType<SoftwareLicensingService>().FirstOrDefault();
-                    if (service != null && !string.IsNullOrWhiteSpace(service.OA3xOriginalProductKey))
-                    {
-                        return $"Hardware product key:    {service.OA3xOriginalProductKey}";
-                    }
-                    return null;
-                });
+                hardware_product_key = Task.Factory.StartNew(() => SoftwareLicensingService.GetInstances()
+                                                   .OfType<SoftwareLicensingService>()
+                                                   .FirstOrDefault()?.OA3xOriginalProductKey);
 #else
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.Error.WriteLine("Current machine is only supported on Windows.");
@@ -231,19 +225,9 @@ namespace GetProductKey
                     .AppendLine($"Registered organization: {obj.Value("RegisteredOrganization")}");
 
 #if WINDOWS || NETFRAMEWORK
-                    if (hardware_prodct_key != null)
+                    if (hardware_product_key != null)
                     {
-                        try
-                        {
-                            var result = hardware_prodct_key.Result;
-                            if (!string.IsNullOrWhiteSpace(result))
-                            {
-                                sb.AppendLine(result);
-                            }
-                        }
-                        catch
-                        {
-                        }
+                        sb.AppendLine($"Hardware product key:    {hardware_product_key.Result}");
                     }
 #endif
 
