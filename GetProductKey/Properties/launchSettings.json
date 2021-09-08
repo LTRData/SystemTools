@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "GetProductKey": {
+      "commandName": "Project"
+    }
+  }
+}

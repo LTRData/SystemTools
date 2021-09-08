@@ -100,7 +100,7 @@ namespace SessionPowerSaver
             return rc;
         }
 
-        private static void ServiceLoop(IList<int> currentProcessTree, ConcurrentDictionary<int, DateTime> suspended)
+        private static void ServiceLoop(IReadOnlyList<int> currentProcessTree, ConcurrentDictionary<int, DateTime> suspended)
         {
             using var sync = new ManualResetEvent(initialState: true);
 
