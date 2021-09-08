@@ -86,7 +86,7 @@ namespace GetProductKey
                 hardware_prodct_key = Task.Factory.StartNew(() =>
                 {
                     var service = SoftwareLicensingService.GetInstances().OfType<SoftwareLicensingService>().FirstOrDefault();
-                    if (service != null)
+                    if (service != null && !string.IsNullOrWhiteSpace(service.OA3xOriginalProductKey))
                     {
                         return $"Hardware product key:    {service.OA3xOriginalProductKey}";
                     }
@@ -236,7 +236,7 @@ namespace GetProductKey
                         try
                         {
                             var result = hardware_prodct_key.Result;
-                            if (result != null)
+                            if (!string.IsNullOrWhiteSpace(result))
                             {
                                 sb.AppendLine(result);
                             }
