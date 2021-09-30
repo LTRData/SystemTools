@@ -9,9 +9,9 @@ using System.Security.Principal;
 
 namespace dssearch
 {
-    static class ActiveDirectoryInfo
+    public static class ActiveDirectoryInfo
     {
-        static IEnumerable<string> GetMessages(this Exception ex)
+        static IEnumerable<string> EnumerateMessages(this Exception ex)
         {
             while (ex != null)
             {
@@ -22,7 +22,7 @@ namespace dssearch
             yield break;
         }
 
-        static int Main(string[] args)
+        public static int Main(string[] args)
         {
             try
             {
@@ -30,15 +30,18 @@ namespace dssearch
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine(string.Join(" -> ", ex.GetMessages().ToArray()));
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Error.WriteLine(string.Join(" -> ", ex.EnumerateMessages().ToArray()));
+                Console.ResetColor();
                 return -1;
             }
         }
 
-        static int InternalMain(string[] args)
+        public static int InternalMain(string[] args)
         {
             DirectoryEntry entry = null;
 
+            // Examples to specify a domain
             //var adPath = "LDAP://DC=olofdom,DC=se";
 
             foreach (var arg in args)
@@ -64,6 +67,7 @@ namespace dssearch
                     entry = entry.Parent;
                 }
 
+                // Examples to search for posix account values
                 //var adSearch = new DirectorySearcher(new DirectoryEntry(adPath), "(&(objectClass=user)(sAMAccountName=olof))");
                 //var adSearch = new DirectorySearcher(new DirectoryEntry(adPath), "(&(objectClass=user)(uidNumber=*)(msSFU30Password=*))");
 
@@ -93,6 +97,8 @@ namespace dssearch
                             {
                                 Console.WriteLine(FormatProp(prop));
                             }
+
+                            // How to clear a field:
                             //userentry.Properties["mail"].Clear();
                             //userentry.CommitChanges();
                         }
@@ -123,27 +129,25 @@ namespace dssearch
                 {
                     Console.WriteLine(FormatProp(prop));
                 }
-                //userentry.Properties["mail"].Clear();
-                //userentry.CommitChanges();
             }
         }
 
         public static string FormatProp(PropertyValueCollection prop)
         {
-            if (prop.Value is byte[] &&
-                (prop.Value as byte[]).Length == 16 &&
-                prop.PropertyName.Contains("GUID"))
+            if (prop.Value is byte[] guidBytes &&
+                guidBytes.Length == 16 &&
+                prop.PropertyName.IndexOf("GUID", StringComparison.OrdinalIgnoreCase) >= 0)
             {
-                return prop.PropertyName + " = " + new Guid(prop.Value as byte[]).ToString();
+                return $"{prop.PropertyName} = {new Guid(guidBytes)}";
             }
-            else if (prop.Value is byte[] &&
-                prop.PropertyName.Contains("Sid"))
+            else if (prop.Value is byte[] sidBytes &&
+                prop.PropertyName.IndexOf("Sid", StringComparison.OrdinalIgnoreCase) >= 0)
             {
-                return prop.PropertyName + " = " + new SecurityIdentifier(prop.Value as byte[], 0).ToString();
+                return $"{prop.PropertyName} = {new SecurityIdentifier(sidBytes, 0)}";
             }
             else
             {
-                return prop.PropertyName + " = " + FormatProp(prop.Value);
+                return $"{prop.PropertyName} = {FormatProp(prop.Value)}";
             }
         }
 
@@ -153,25 +157,31 @@ namespace dssearch
             {
                 return "(null)";
             }
-            else if (propValue is string)
+            else if (propValue is string str)
             {
-                return propValue as string;
+                return str;
             }
-            else if (propValue is byte[])
+            else if (propValue is byte[] bytes)
             {
-                return BitConverter.ToString(propValue as byte[]);
+                if (bytes.Length > 32)
+                {
+                    return Convert.ToBase64String(bytes);
+                }
+                else
+                {
+                    return BitConverter.ToString(bytes);
+                }
             }
-            else if (propValue is Array)
+            else if (propValue is object[] array)
             {
                 return "{" +
                     Environment.NewLine +
                     string.Join(";" + Environment.NewLine,
-                    Array.ConvertAll(propValue as object[], o => "  " + FormatProp(o))) + Environment.NewLine +
+                    Array.ConvertAll(array, o => $"  {FormatProp(o)}")) + Environment.NewLine +
                     "}";
             }
-            else if (propValue.GetType() is IReflect)
+            else if (propValue.GetType() is IReflect reflect)
             {
-                var reflect = propValue.GetType() as IReflect;
                 var type = reflect.UnderlyingSystemType;
 
                 if (type.GUID.Equals(Guid.Empty))

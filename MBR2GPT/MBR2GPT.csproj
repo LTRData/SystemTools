@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFrameworks>net48</TargetFrameworks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="LTRLib40">
+      <HintPath>..\..\LTRLib\$(Configuration)\$(TargetFramework)\LTRLib40.dll</HintPath>
+    </Reference>
+    <Reference Include="LTRLib40:Interop">
+      <HintPath>..\..\LTRLib\$(Configuration)\$(TargetFramework)\LTRLib40.Interop.dll</HintPath>
+    </Reference>
+    <Reference Include="DiscUtils.Core">
+      <HintPath>..\..\DiscUtils\Library\DiscUtils\bin\$(Configuration)\$(TargetFramework)\DiscUtils.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="DiscUtils.Streams">
+      <HintPath>..\..\DiscUtils\Library\DiscUtils\bin\$(Configuration)\$(TargetFramework)\DiscUtils.Streams.dll</HintPath>
+    </Reference>
+    <Reference Include="DiscUtils.Dmg">
+      <HintPath>..\..\DiscUtils\Library\DiscUtils\bin\$(Configuration)\$(TargetFramework)\DiscUtils.Dmg.dll</HintPath>
+    </Reference>
+    <Reference Include="DiscUtils.Vdi">
+      <HintPath>..\..\DiscUtils\Library\DiscUtils\bin\$(Configuration)\$(TargetFramework)\DiscUtils.Vdi.dll</HintPath>
+    </Reference>
+    <Reference Include="DiscUtils.Vhd">
+      <HintPath>..\..\DiscUtils\Library\DiscUtils\bin\$(Configuration)\$(TargetFramework)\DiscUtils.Vhd.dll</HintPath>
+    </Reference>
+    <Reference Include="DiscUtils.Vhdx">
+      <HintPath>..\..\DiscUtils\Library\DiscUtils\bin\$(Configuration)\$(TargetFramework)\DiscUtils.Vhdx.dll</HintPath>
+    </Reference>
+    <Reference Include="DiscUtils.Vmdk">
+      <HintPath>..\..\DiscUtils\Library\DiscUtils\bin\$(Configuration)\$(TargetFramework)\DiscUtils.Vmdk.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
