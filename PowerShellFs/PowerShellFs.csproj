@@ -3,7 +3,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net48;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net46;netstandard2.0</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
@@ -13,10 +13,10 @@
 
   <ItemGroup>
     <Reference Include="DokanNet">
-      <HintPath>..\..\Repos\dokan-dotnet\$(Configuration)\$(TargetFramework)\DokanNet.dll</HintPath>
+      <HintPath>$(DokanNetPath)\DokanNet.dll</HintPath>
     </Reference>
     <Reference Include="DiscUtils.Core">
-      <HintPath>..\..\DiscUtils\Library\DiscUtils\bin\$(Configuration)\$(TargetFramework)\DiscUtils.Core.dll</HintPath>
+      <HintPath>$(DiscUtilsPath)\DiscUtils.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
 

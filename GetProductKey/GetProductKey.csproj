@@ -2,52 +2,52 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net40;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net40;netstandard2.0;netcoreapp3.1</TargetFrameworks>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
     <Reference Include="DiscUtils.Core">
-      <HintPath>..\..\DiscUtils\Library\DiscUtils\bin\$(Configuration)\$(TargetFramework)\DiscUtils.Core.dll</HintPath>
+      <HintPath>$(DiscUtilsPath)\DiscUtils.Core.dll</HintPath>
     </Reference>
     <Reference Include="DiscUtils.Dmg">
-      <HintPath>..\..\DiscUtils\Library\DiscUtils\bin\$(Configuration)\$(TargetFramework)\DiscUtils.Dmg.dll</HintPath>
+      <HintPath>$(DiscUtilsPath)\DiscUtils.Dmg.dll</HintPath>
     </Reference>
     <Reference Include="DiscUtils.Fat">
-      <HintPath>..\..\DiscUtils\Library\DiscUtils\bin\$(Configuration)\$(TargetFramework)\DiscUtils.Fat.dll</HintPath>
+      <HintPath>$(DiscUtilsPath)\DiscUtils.Fat.dll</HintPath>
     </Reference>
     <Reference Include="DiscUtils.Iso9660">
-      <HintPath>..\..\DiscUtils\Library\DiscUtils\bin\$(Configuration)\$(TargetFramework)\DiscUtils.Iso9660.dll</HintPath>
+      <HintPath>$(DiscUtilsPath)\DiscUtils.Iso9660.dll</HintPath>
     </Reference>
     <Reference Include="DiscUtils.Ntfs">
-      <HintPath>..\..\DiscUtils\Library\DiscUtils\bin\$(Configuration)\$(TargetFramework)\DiscUtils.Ntfs.dll</HintPath>
+      <HintPath>$(DiscUtilsPath)\DiscUtils.Ntfs.dll</HintPath>
     </Reference>
     <Reference Include="DiscUtils.Registry">
-      <HintPath>..\..\DiscUtils\Library\DiscUtils\bin\$(Configuration)\$(TargetFramework)\DiscUtils.Registry.dll</HintPath>
+      <HintPath>$(DiscUtilsPath)\DiscUtils.Registry.dll</HintPath>
     </Reference>
     <Reference Include="DiscUtils.Streams">
-      <HintPath>..\..\DiscUtils\Library\DiscUtils\bin\$(Configuration)\$(TargetFramework)\DiscUtils.Streams.dll</HintPath>
+      <HintPath>$(DiscUtilsPath)\DiscUtils.Streams.dll</HintPath>
     </Reference>
     <Reference Include="DiscUtils.Udf">
-      <HintPath>..\..\DiscUtils\Library\DiscUtils\bin\$(Configuration)\$(TargetFramework)\DiscUtils.Udf.dll</HintPath>
+      <HintPath>$(DiscUtilsPath)\DiscUtils.Udf.dll</HintPath>
     </Reference>
     <Reference Include="DiscUtils.Vdi">
-      <HintPath>..\..\DiscUtils\Library\DiscUtils\bin\$(Configuration)\$(TargetFramework)\DiscUtils.Vdi.dll</HintPath>
+      <HintPath>$(DiscUtilsPath)\DiscUtils.Vdi.dll</HintPath>
     </Reference>
     <Reference Include="DiscUtils.Vhd">
-      <HintPath>..\..\DiscUtils\Library\DiscUtils\bin\$(Configuration)\$(TargetFramework)\DiscUtils.Vhd.dll</HintPath>
+      <HintPath>$(DiscUtilsPath)\DiscUtils.Vhd.dll</HintPath>
     </Reference>
     <Reference Include="DiscUtils.Vhdx">
-      <HintPath>..\..\DiscUtils\Library\DiscUtils\bin\$(Configuration)\$(TargetFramework)\DiscUtils.Vhdx.dll</HintPath>
+      <HintPath>$(DiscUtilsPath)\DiscUtils.Vhdx.dll</HintPath>
     </Reference>
     <Reference Include="DiscUtils.Vmdk">
-      <HintPath>..\..\DiscUtils\Library\DiscUtils\bin\$(Configuration)\$(TargetFramework)\DiscUtils.Vmdk.dll</HintPath>
+      <HintPath>$(DiscUtilsPath)\DiscUtils.Vmdk.dll</HintPath>
     </Reference>
     <Reference Include="DiscUtils.Wim">
-      <HintPath>..\..\DiscUtils\Library\DiscUtils\bin\$(Configuration)\$(TargetFramework)\DiscUtils.Wim.dll</HintPath>
+      <HintPath>$(DiscUtilsPath)\DiscUtils.Wim.dll</HintPath>
     </Reference>
     <Reference Include="DiscUtils.Xva">
-      <HintPath>..\..\DiscUtils\Library\DiscUtils\bin\$(Configuration)\$(TargetFramework)\DiscUtils.Xva.dll</HintPath>
+      <HintPath>$(DiscUtilsPath)\DiscUtils.Xva.dll</HintPath>
     </Reference>
     <Reference Include="System.Management" Condition="'$(TargetFramework)' == 'net40'" />
   </ItemGroup>
