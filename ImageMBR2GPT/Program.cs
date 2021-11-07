@@ -10,7 +10,7 @@ using LTRLib.IO;
 using DiscUtils.Streams;
 using DiscUtils.Raw;
 
-namespace MBR2GPT
+namespace ImageMBR2GPT
 {
     public static class Program
     {
@@ -69,11 +69,11 @@ namespace MBR2GPT
 
                 Console.WriteLine($"Number of partitions: {partitions.Count}");
 
-                var extents = partitions.Select((p, i) => (i + 1, p.FirstSector, p.LastSector, p.SectorCount)).ToArray();
+                var extents = partitions.Select((p, i) => (i + 1, p)).ToArray();
 
-                foreach (var (i, FirstSector, LastSector, SectorCount) in extents)
+                foreach (var (i, p) in extents)
                 {
-                    Console.WriteLine($"Partition {i}, offset sector {FirstSector}, number of sectors {SectorCount} ({CppFormatting.FormatBytes(SectorCount * disk.Geometry.BytesPerSector)})");
+                    Console.WriteLine($"Partition {i}, {p.TypeAsString}, offset sector {p.FirstSector}, number of sectors {p.SectorCount} ({CppFormatting.FormatBytes(p.SectorCount * disk.Geometry.BytesPerSector)})");
                 }
 
                 Console.WriteLine("Do you want to replace the current partition table with a new GPT partition table? (y/N)");
@@ -87,10 +87,15 @@ namespace MBR2GPT
 
                 Console.WriteLine("Creating new partition table...");
                 var new_table = GuidPartitionTable.Initialize(disk);
-                foreach (var (i, FirstSector, LastSector, SectorCount) in extents)
+                foreach (var (i, p) in extents)
                 {
-                    Console.WriteLine($"Creating partition {i}, offset sector {FirstSector}, number of sectors {SectorCount}");
-                    new_table.Create(FirstSector, LastSector, GuidPartitionTypes.WindowsBasicData, 0, null);
+                    var partitionType = GuidPartitionTypes.WindowsBasicData;
+                    if (p is GuidPartitionInfo guidPartition)
+                    {
+                        partitionType = guidPartition.GuidType;
+                    }
+                    Console.WriteLine($"Creating partition {i}, offset sector {p.FirstSector}, number of sectors {p.SectorCount}");
+                    new_table.Create(p.FirstSector, p.LastSector, partitionType, 0, null);
                 }
 
                 Console.WriteLine("Done. The disk now has a GPT partition table.");
@@ -99,8 +104,9 @@ namespace MBR2GPT
 
         public static VirtualDisk OpenVirtualDisk(string path, FileAccess access)
         {
-            if (path.StartsWith(@"\\?\", StringComparison.Ordinal) ||
-                path.StartsWith(@"\\.\", StringComparison.Ordinal))
+            if (string.IsNullOrWhiteSpace(Path.GetExtension(path)) &&
+                (path.StartsWith(@"\\?\", StringComparison.Ordinal) ||
+                path.StartsWith(@"\\.\", StringComparison.Ordinal)))
             {
                 var disk = new DiskStream(path, access);
                 try
