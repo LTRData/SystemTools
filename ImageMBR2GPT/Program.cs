@@ -50,6 +50,11 @@ namespace ImageMBR2GPT
 
         public static void UnsafeMain(params string[] args)
         {
+            if (args is null || args.Length == 0)
+            {
+                throw new ArgumentException("Missing image file path", nameof(args));
+            }
+
             foreach (var arg in args)
             {
                 Console.WriteLine($"Opening '{arg}'...");

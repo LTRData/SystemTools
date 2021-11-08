@@ -1,6 +1,4 @@
-﻿#if WINDOWS || NETFRAMEWORK
-
-namespace ROOT.CIMV2 {
+﻿namespace ROOT.CIMV2 {
     using System;
     using System.ComponentModel;
     using System.Management;
@@ -1864,5 +1862,3 @@ namespace ROOT.CIMV2 {
         }
     }
 }
-
-#endif

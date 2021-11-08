@@ -12,10 +12,9 @@ using System.Text;
 using System.Threading.Tasks;
 using DiscUtilsRegistryHive = DiscUtils.Registry.RegistryHive;
 using DiscUtilsRegistryKey = DiscUtils.Registry.RegistryKey;
-#if WINDOWS || NETFRAMEWORK
+using System.Runtime.InteropServices;
 using Microsoft.Win32;
 using ROOT.CIMV2;
-#endif
 
 namespace GetProductKey
 {
@@ -44,7 +43,33 @@ namespace GetProductKey
             }
         }
 
-        public static void Main(params string[] args)
+        private static string FormatMessage(this Exception ex)
+        {
+#if DEBUG
+            return ex.ToString();
+#else
+            return ex.GetBaseException().Message; 
+#endif
+        }
+
+        public static int Main(params string[] args)
+        {
+            try
+            {
+                UnsafeMain(args);
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                Console.BackgroundColor = ConsoleColor.Red;
+                Console.Error.WriteLine(ex.FormatMessage());
+                Console.ResetColor();
+
+                return Marshal.GetHRForException(ex);
+            }
+        }
+
+        public static void UnsafeMain(params string[] args)
         {
             if (args != null && args.Length == 1 && args[0].Equals("/?", StringComparison.Ordinal))
             {
@@ -67,17 +92,14 @@ namespace GetProductKey
                 return;
             }
 
-#if WINDOWS || NETFRAMEWORK
             var online_root_keys = new ConcurrentBag<RegistryKey>();
             Task<string> hardware_product_key = null;
-#endif
             var offline_root_keys = new ConcurrentBag<DiscUtilsRegistryKey>();
             var value_getters = new ConcurrentBag<KeyValuePair<string, Func<string, object>>>();
             var disposables = new ConcurrentBag<IDisposable>();
 
             if (args == null || args.Length == 0)
             {
-#if WINDOWS || NETFRAMEWORK
                 var key = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64).OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
                 disposables.Add(key);
                 online_root_keys.Add(key);
@@ -86,11 +108,6 @@ namespace GetProductKey
                 hardware_product_key = Task.Factory.StartNew(() => SoftwareLicensingService.GetInstances()
                                                    .OfType<SoftwareLicensingService>()
                                                    .FirstOrDefault()?.OA3xOriginalProductKey);
-#else
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.Error.WriteLine("Current machine is only supported on Windows.");
-                Console.ResetColor();
-#endif
             }
             else
             {
@@ -101,15 +118,11 @@ namespace GetProductKey
                         if (arg.StartsWith(@"\\", StringComparison.Ordinal) &&
                             arg.IndexOf('\\', 2) < 0)
                         {
-#if WINDOWS || NETFRAMEWORK
                             using var remotehive = RegistryKey.OpenRemoteBaseKey(RegistryHive.LocalMachine, arg, RegistryView.Registry64);
                             var key = remotehive?.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
                             disposables.Add(key);
                             online_root_keys.Add(key);
                             value_getters.Add(new(arg, key.GetValue));
-#else
-                            throw new PlatformNotSupportedException("Queries to other running machines over network are only supported on Windows.");
-#endif
                         }
                         else if (Directory.Exists(arg))
                         {
@@ -134,7 +147,7 @@ namespace GetProductKey
                             {
                                 iso = new CDReader(file, joliet: true);
                             }
-                            
+
                             var wiminfo = iso.GetFileInfo(@"sources\install.wim");
                             if (!wiminfo.Exists)
                             {
@@ -200,7 +213,7 @@ namespace GetProductKey
                         lock (_syncObj)
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
-                            Console.Error.WriteLine($"Error opening '{arg}': {ex.GetBaseException().Message}");
+                            Console.Error.WriteLine($"Error opening '{arg}': {ex.FormatMessage()}");
                             Console.ResetColor();
                         }
                     }
@@ -224,12 +237,10 @@ namespace GetProductKey
                     .AppendLine($"Registered owner:        {obj.Value("RegisteredOwner")}")
                     .AppendLine($"Registered organization: {obj.Value("RegisteredOrganization")}");
 
-#if WINDOWS || NETFRAMEWORK
                     if (hardware_product_key != null)
                     {
                         sb.AppendLine($"Hardware product key:    {hardware_product_key.Result}");
                     }
-#endif
 
                     var msg = sb.ToString();
 
@@ -243,7 +254,7 @@ namespace GetProductKey
                     lock (_syncObj)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Error.WriteLine($"Error reading '{obj.Key}': {ex.GetBaseException().Message}");
+                        Console.Error.WriteLine($"Error reading '{obj.Key}': {ex.FormatMessage()}");
                         Console.ResetColor();
                     }
                 }
