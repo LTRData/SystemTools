@@ -1,14 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFrameworks>net20;net40</TargetFrameworks>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFrameworks>netcoreapp3.1;net20;net40</TargetFrameworks>
+		<UseWindowsForms>true</UseWindowsForms>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Reference Include="System.Data" />
-    <Reference Include="System.Windows.Forms" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework.CompareTo(`net5`))' &lt; 0">
+		<Reference Include="System.Data" />
+		<Reference Include="System.Windows.Forms" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework.CompareTo(`net5`))' &gt;= 0">
+	  <PackageReference Include="System.Data.Odbc">
+	    <Version>6.0.0</Version>
+	  </PackageReference>
+	</ItemGroup>
 
 </Project>

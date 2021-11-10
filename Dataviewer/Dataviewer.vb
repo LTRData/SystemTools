@@ -139,7 +139,7 @@ Public Class Dataviewer
 
     End Sub
 
-    Private Sub TextBox_LostFocus(sender As Object, e As System.EventArgs) Handles tbDatasource.LostFocus, tbTable.LostFocus
+    Private Sub TextBox_LostFocus(sender As Object, e As EventArgs) Handles tbDatasource.LostFocus, tbTable.LostFocus
         With DirectCast(sender, TextBox)
             .SelectionStart = 0
             .SelectionLength = .TextLength
@@ -152,7 +152,7 @@ Public Class Dataviewer
         tbTable.Select()
     End Sub
 
-    Private Sub DataGridView_DataError(sender As Object, e As System.Windows.Forms.DataGridViewDataErrorEventArgs) Handles DataGridView.DataError
+    Private Sub DataGridView_DataError(sender As Object, e As DataGridViewDataErrorEventArgs) Handles DataGridView.DataError
         If TypeOf e.Exception Is FormatException Then
             MessageBox.Show(Me, e.Exception.GetBaseException().Message, "Data format error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End If

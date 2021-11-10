@@ -3,7 +3,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net35;net40;netstandard2.0;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net35;net40;netcoreapp3.1</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework.TrimEnd(`1234567890`))' == 'net'">

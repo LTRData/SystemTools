@@ -61,7 +61,7 @@ namespace DiskVolumes
 
                 var links = NativeFileIO.QueryDosDevice()
                     .Select(l => new { l, t = NativeFileIO.QueryDosDevice(l) })
-                    .Where(o => o.t.Contains(target, StringComparer.OrdinalIgnoreCase))
+                    .Where(o => o.t is not null && o.t.Contains(target, StringComparer.OrdinalIgnoreCase))
                     .Select(o => o.l);
 
                 Console.WriteLine("Links:");
