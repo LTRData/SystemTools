@@ -25,7 +25,7 @@ namespace Win8
     {
         private static IEnumerable<string> EnumerateMessages(this Exception ex)
         {
-            while (ex != null)
+            while (ex is not null)
             {
                 yield return ex.Message;
                 ex = ex.InnerException;
@@ -34,7 +34,7 @@ namespace Win8
 
         public static int Main(params string[] args)
         {
-            if (args == null || args.Length == 0)
+            if (args is null || args.Length == 0)
             {
                 Console.WriteLine("Package name required.");
                 return -1;

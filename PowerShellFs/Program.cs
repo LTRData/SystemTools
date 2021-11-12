@@ -47,7 +47,7 @@ namespace PowerShellFs
                 };
             }
             
-            using var runspace = ci != null ? RunspaceFactory.CreateRunspace(ci) : RunspaceFactory.CreateRunspace();
+            using var runspace = ci is not null ? RunspaceFactory.CreateRunspace(ci) : RunspaceFactory.CreateRunspace();
 
             var fs = new PowerShellFs(runspace);
 

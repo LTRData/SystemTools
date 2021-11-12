@@ -55,7 +55,7 @@ namespace PowerShellFs
                 finfo = ps.AddCommand("Get-Item").AddParameter("LiteralPath", path).Invoke().FirstOrDefault();
             }
 
-            if (finfo == null && path.EndsWith(@":\", StringComparison.Ordinal))
+            if (finfo is null && path.EndsWith(@":\", StringComparison.Ordinal))
             {
                 lock (Runspace)
                 {
@@ -65,7 +65,7 @@ namespace PowerShellFs
                 }
             }
 
-            if (finfo == null)
+            if (finfo is null)
             {
                 return NtStatus.ObjectNameNotFound;
             }
@@ -119,13 +119,13 @@ namespace PowerShellFs
 
             var filedata = fileObject.FileData;
 
-            if (filedata == null)
+            if (filedata is null)
             {
                 lock (fileObject)
                 {
                     filedata = fileObject.FileData;
 
-                    if (filedata == null)
+                    if (filedata is null)
                     {
                         lock (Runspace)
                         {
@@ -143,7 +143,7 @@ namespace PowerShellFs
                             }
                             else if (finfo.BaseObject is DictionaryEntry entry)
                             {
-                                if (entry.Value == null)
+                                if (entry.Value is null)
                                 {
                                     filedata = Array.Empty<byte>();
                                 }
@@ -163,7 +163,7 @@ namespace PowerShellFs
                 }
             }
 
-            if (filedata == null)
+            if (filedata is null)
             {
                 return NtStatus.InvalidDeviceRequest;
             }
@@ -221,7 +221,7 @@ namespace PowerShellFs
                     .FirstOrDefault()?.Properties;
             }
 
-            if (finfo == null && path.EndsWith(@":\", StringComparison.Ordinal))
+            if (finfo is null && path.EndsWith(@":\", StringComparison.Ordinal))
             {
                 lock (Runspace)
                 {
@@ -231,7 +231,7 @@ namespace PowerShellFs
                         .FirstOrDefault()?.Properties;
                 }
 
-                if (finfo != null)
+                if (finfo is not null)
                 {
                     fileInfo = new ByHandleFileInformation
                     {
@@ -242,7 +242,7 @@ namespace PowerShellFs
                 }
             }
 
-            if (finfo == null)
+            if (finfo is null)
             {
                 fileInfo = null;
                 return NtStatus.ObjectNameNotFound;
@@ -268,7 +268,7 @@ namespace PowerShellFs
 
         public static string TranslatePath(string path)
         {
-            if (path != null && path.Length > 0 && path[0] == '\\')
+            if (path is not null && path.Length > 0 && path[0] == '\\')
             {
                 path = path.Substring(1);
             }

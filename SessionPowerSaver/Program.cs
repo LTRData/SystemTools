@@ -83,7 +83,7 @@ namespace SessionPowerSaver
                 {
                     using var suspended_process = SafeOpenProcess(item.Key);
 
-                    if (suspended_process != null && item.Value == suspended_process.StartTime)
+                    if (suspended_process is not null && item.Value == suspended_process.StartTime)
                     {
                         LogWrite($"Resuming process {suspended_process.Id} ({suspended_process.ProcessName})");
                         suspended_process.Resume();
@@ -131,7 +131,7 @@ namespace SessionPowerSaver
                             {
                                 using var suspended_process = SafeOpenProcess(p.ProcessId);
 
-                                if (suspended_process == null || item != suspended_process.StartTime)
+                                if (suspended_process is null || item != suspended_process.StartTime)
                                 {
                                     LogWrite($"Previous process {p.ProcessId} with start time {item} no longer exists");
                                     suspended.TryRemove(p.ProcessId, out item);
@@ -156,7 +156,7 @@ namespace SessionPowerSaver
 
                             using var process = SafeOpenProcess(p.ProcessId);
 
-                            if (process == null ||
+                            if (process is null ||
                                 process.MainWindowHandle == IntPtr.Zero ||
                                 !process.Responding)
                             {

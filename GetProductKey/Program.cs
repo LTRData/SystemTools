@@ -65,29 +65,37 @@ namespace GetProductKey
                 Console.Error.WriteLine(ex.FormatMessage());
                 Console.ResetColor();
 
+#if NETFRAMEWORK && !NET45_OR_GREATER
                 return Marshal.GetHRForException(ex);
+#else
+                return ex.HResult;
+#endif
             }
         }
 
         public static void UnsafeMain(params string[] args)
         {
-            if (args != null && args.Length == 1 && args[0].Equals("/?", StringComparison.Ordinal))
+            if (args is not null && args.Length == 1 && args[0].Equals("/?", StringComparison.Ordinal))
             {
-                Console.WriteLine("GetProductKey");
-                Console.WriteLine("A tool to show Windows installation information including product key.");
-                Console.WriteLine("Copyright (c) Olof Lagerkvist, LTR Data, 2021");
-                Console.WriteLine("http://ltr-data.se  https://github.com/LTRData");
-                Console.WriteLine();
-                Console.WriteLine("Syntax to query current machine:");
-                Console.WriteLine("GetProductKey");
-                Console.WriteLine("Syntax to query another machine on network:");
-                Console.WriteLine(@"GetProductKey \\machinename");
-                Console.WriteLine(@"Syntax for an offline Windows installation on an attached external harddisk");
-                Console.WriteLine(@"GetProductKey D:\");
-                Console.WriteLine("Syntax for a virtual machine image (supports vhd, vhdx, vmdk and vdi):");
-                Console.WriteLine(@"GetProductKey D:\path\image.vhd");
-                Console.WriteLine("Syntax for a setup ISO or WIM image:");
-                Console.WriteLine(@"GetProductKey D:\path\windows_setup.iso");
+                Console.WriteLine(@"GetProductKey
+A tool to show Windows installation information including product key.
+Copyright (c) Olof Lagerkvist, LTR Data, 2021
+http://ltr-data.se  https://github.com/LTRData
+
+Syntax to query current machine (Windows only):
+GetProductKey
+
+Syntax to query another machine on network (Windows only):
+GetProductKey \\machinename
+
+Syntax for an offline Windows installation on an attached external harddisk
+GetProductKey D:\
+
+Syntax for a virtual machine image (supports vhd, vhdx, vmdk and vdi):
+GetProductKey D:\path\image.vhd
+
+Syntax for a setup ISO or WIM image:
+GetProductKey D:\path\windows_setup.iso");
 
                 return;
             }
@@ -98,7 +106,7 @@ namespace GetProductKey
             var value_getters = new ConcurrentBag<KeyValuePair<string, Func<string, object>>>();
             var disposables = new ConcurrentBag<IDisposable>();
 
-            if (args == null || args.Length == 0)
+            if (args is null || args.Length == 0)
             {
                 var key = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64).OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
                 disposables.Add(key);
@@ -188,7 +196,7 @@ namespace GetProductKey
                         {
                             var image = VirtualDisk.OpenDisk(arg, FileAccess.Read);
 
-                            if (image == null)
+                            if (image is null)
                             {
                                 image = new DiscUtils.Raw.Disk(arg, FileAccess.Read);
                             }
@@ -232,12 +240,12 @@ namespace GetProductKey
                     .AppendLine($"Installation type:       {obj.Value("InstallationType")}")
                     .AppendLine($"Version:                 {GetVersion(obj.Value)}")
                     .AppendLine($"Type:                    {obj.Value("CurrentType")}")
-                    .AppendLine($"Product key:             {GetProductKey(obj.Value)}")
+                    .AppendLine($"Product key:             {DecodeProductKey(obj.Value("DigitalProductId") as byte[])}")
                     .AppendLine($"Install time (UTC):      {GetInstallTime(obj.Value)}")
                     .AppendLine($"Registered owner:        {obj.Value("RegisteredOwner")}")
                     .AppendLine($"Registered organization: {obj.Value("RegisteredOrganization")}");
 
-                    if (hardware_product_key != null)
+                    if (hardware_product_key is not null)
                     {
                         sb.AppendLine($"Hardware product key:    {hardware_product_key.Result}");
                     }
@@ -266,7 +274,7 @@ namespace GetProductKey
         private static string GetVersion(Func<string, object> value)
         {
             var currentMajor = value("CurrentMajorVersionNumber");
-            if (currentMajor != null)
+            if (currentMajor is not null)
             {
                 return $"{currentMajor}.{value("CurrentMinorVersionNumber")}.{value("CurrentBuildNumber")} {value("DisplayVersion")}";
             }
@@ -278,18 +286,14 @@ namespace GetProductKey
 
         private static DateTime? GetInstallTime(Func<string, object> value)
         {
-            var time = value("InstallTime") as long?;
-
-            if (time.HasValue)
+            if (value("InstallTime") is long time)
             {
-                return DateTime.FromFileTimeUtc(time.Value);
+                return DateTime.FromFileTimeUtc(time);
             }
 
-            var date = value("InstallDate") as int?;
-
-            if (date.HasValue)
+            if (value("InstallDate") is int date)
             {
-                return new DateTime(1970, 1, 1).AddSeconds(date.Value);
+                return new DateTime(1970, 1, 1).AddSeconds(date);
             }
 
             return null;
@@ -302,7 +306,7 @@ namespace GetProductKey
                 var fs = wim.GetImage(i);
                 var hive = fs.GetFileInfo(@"Windows\system32\config\SOFTWARE");
 
-                if (hive != null && hive.Exists)
+                if (hive is not null && hive.Exists)
                 {
                     yield return new(i + 1, hive);
                 }
@@ -313,7 +317,7 @@ namespace GetProductKey
         {
             var partitions = image.Partitions;
 
-            if (partitions != null && partitions.Count > 0)
+            if (partitions is not null && partitions.Count > 0)
             {
                 for (var i = 0; i < partitions.Count; i++)
                 {
@@ -341,12 +345,12 @@ namespace GetProductKey
                     }
 
                     var hive = fs.GetFileInfo(@"Windows\system32\config\SOFTWARE");
-                    if (hive == null || !hive.Exists)
+                    if (hive is null || !hive.Exists)
                     {
                         hive = fs.GetFileInfo(@"WINNT\system32\config\SOFTWARE");
                     }
 
-                    if (hive != null && hive.Exists)
+                    if (hive is not null && hive.Exists)
                     {
                         yield return new(i + 1, hive);
                     }
@@ -362,7 +366,7 @@ namespace GetProductKey
 
                     var hive = fs.GetFileInfo(@"Windows\system32\config\SOFTWARE");
 
-                    if (hive != null && hive.Exists)
+                    if (hive is not null && hive.Exists)
                     {
                         yield return new(0, hive);
                     }
@@ -370,9 +374,9 @@ namespace GetProductKey
             }
         }
 
-        public static string GetProductKey(Func<string, object> value)
+        public static string DecodeProductKey(byte[] data)
         {
-            if (value("DigitalProductId") is not byte[] data || data.Length < 67)
+            if (data is null || data.Length < 67)
             {
                 return null;
             }

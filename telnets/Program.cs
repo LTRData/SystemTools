@@ -33,7 +33,7 @@ namespace telnets
 
             try
             {
-                if (args == null || args.Length < 1)
+                if (args is null || args.Length < 1)
                 {
                     WriteError("Syntax: telnets [options] host [port]");
                     return -1;

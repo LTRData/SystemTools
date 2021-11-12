@@ -13,7 +13,7 @@ namespace dssearch
     {
         static IEnumerable<string> EnumerateMessages(this Exception ex)
         {
-            while (ex != null)
+            while (ex is not null)
             {
                 yield return ex.Message;
                 ex = ex.InnerException;
@@ -48,17 +48,17 @@ namespace dssearch
             {
                 if (arg.StartsWith("LDAP://", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (entry != null)
+                    if (entry is not null)
                     {
                         entry.Dispose();
                     }
                     entry = new DirectoryEntry(arg);
                 }
 
-                if (entry == null)
+                if (entry is null)
                 {
                     entry = UserPrincipal.Current.GetUnderlyingObject() as DirectoryEntry;
-                    if (entry == null)
+                    if (entry is null)
                     {
                         Console.Error.WriteLine("No current LDAP user.");
                         return 1;
@@ -121,7 +121,7 @@ namespace dssearch
 
         public static void PrintProp(DirectoryEntry user)
         {
-            if (user != null)
+            if (user is not null)
             {
                 var props = user.Properties;
 
@@ -153,7 +153,7 @@ namespace dssearch
 
         private static string FormatProp(object propValue)
         {
-            if (propValue == null)
+            if (propValue is null)
             {
                 return "(null)";
             }

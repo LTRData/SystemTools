@@ -109,10 +109,10 @@
         public string ManagementClassName {
             get {
                 string strRet = CreatedClassName;
-                if ((curObj != null)) {
-                    if ((curObj.ClassPath != null)) {
+                if ((curObj is not null)) {
+                    if ((curObj.ClassPath is not null)) {
                         strRet = ((string)(curObj["__CLASS"]));
-                        if (((strRet == null) 
+                        if (((strRet is null) 
                                     || (strRet == string.Empty))) {
                             strRet = CreatedClassName;
                         }
@@ -236,7 +236,7 @@
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsDiscoveredKeyManagementServiceMachinePortNull {
             get {
-                if ((curObj["DiscoveredKeyManagementServiceMachinePort"] == null)) {
+                if ((curObj["DiscoveredKeyManagementServiceMachinePort"] is null)) {
                     return true;
                 }
                 else {
@@ -251,7 +251,7 @@
         [TypeConverter(typeof(WMIValueTypeConverter))]
         public uint DiscoveredKeyManagementServiceMachinePort {
             get {
-                if ((curObj["DiscoveredKeyManagementServiceMachinePort"] == null)) {
+                if ((curObj["DiscoveredKeyManagementServiceMachinePort"] is null)) {
                     return System.Convert.ToUInt32(0);
                 }
                 return ((uint)(curObj["DiscoveredKeyManagementServiceMachinePort"]));
@@ -262,7 +262,7 @@
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsIsKeyManagementServiceMachineNull {
             get {
-                if ((curObj["IsKeyManagementServiceMachine"] == null)) {
+                if ((curObj["IsKeyManagementServiceMachine"] is null)) {
                     return true;
                 }
                 else {
@@ -277,7 +277,7 @@
         [TypeConverter(typeof(WMIValueTypeConverter))]
         public uint IsKeyManagementServiceMachine {
             get {
-                if ((curObj["IsKeyManagementServiceMachine"] == null)) {
+                if ((curObj["IsKeyManagementServiceMachine"] is null)) {
                     return System.Convert.ToUInt32(0);
                 }
                 return ((uint)(curObj["IsKeyManagementServiceMachine"]));
@@ -288,7 +288,7 @@
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsKeyManagementServiceCurrentCountNull {
             get {
-                if ((curObj["KeyManagementServiceCurrentCount"] == null)) {
+                if ((curObj["KeyManagementServiceCurrentCount"] is null)) {
                     return true;
                 }
                 else {
@@ -304,7 +304,7 @@
         [TypeConverter(typeof(WMIValueTypeConverter))]
         public uint KeyManagementServiceCurrentCount {
             get {
-                if ((curObj["KeyManagementServiceCurrentCount"] == null)) {
+                if ((curObj["KeyManagementServiceCurrentCount"] is null)) {
                     return System.Convert.ToUInt32(0);
                 }
                 return ((uint)(curObj["KeyManagementServiceCurrentCount"]));
@@ -315,7 +315,7 @@
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsKeyManagementServiceDnsPublishingNull {
             get {
-                if ((curObj["KeyManagementServiceDnsPublishing"] == null)) {
+                if ((curObj["KeyManagementServiceDnsPublishing"] is null)) {
                     return true;
                 }
                 else {
@@ -331,7 +331,7 @@
         [TypeConverter(typeof(WMIValueTypeConverter))]
         public bool KeyManagementServiceDnsPublishing {
             get {
-                if ((curObj["KeyManagementServiceDnsPublishing"] == null)) {
+                if ((curObj["KeyManagementServiceDnsPublishing"] is null)) {
                     return System.Convert.ToBoolean(0);
                 }
                 return ((bool)(curObj["KeyManagementServiceDnsPublishing"]));
@@ -342,7 +342,7 @@
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsKeyManagementServiceFailedRequestsNull {
             get {
-                if ((curObj["KeyManagementServiceFailedRequests"] == null)) {
+                if ((curObj["KeyManagementServiceFailedRequests"] is null)) {
                     return true;
                 }
                 else {
@@ -357,7 +357,7 @@
         [TypeConverter(typeof(WMIValueTypeConverter))]
         public uint KeyManagementServiceFailedRequests {
             get {
-                if ((curObj["KeyManagementServiceFailedRequests"] == null)) {
+                if ((curObj["KeyManagementServiceFailedRequests"] is null)) {
                     return System.Convert.ToUInt32(0);
                 }
                 return ((uint)(curObj["KeyManagementServiceFailedRequests"]));
@@ -368,7 +368,7 @@
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsKeyManagementServiceHostCachingNull {
             get {
-                if ((curObj["KeyManagementServiceHostCaching"] == null)) {
+                if ((curObj["KeyManagementServiceHostCaching"] is null)) {
                     return true;
                 }
                 else {
@@ -384,7 +384,7 @@
         [TypeConverter(typeof(WMIValueTypeConverter))]
         public bool KeyManagementServiceHostCaching {
             get {
-                if ((curObj["KeyManagementServiceHostCaching"] == null)) {
+                if ((curObj["KeyManagementServiceHostCaching"] is null)) {
                     return System.Convert.ToBoolean(0);
                 }
                 return ((bool)(curObj["KeyManagementServiceHostCaching"]));
@@ -395,7 +395,7 @@
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsKeyManagementServiceLicensedRequestsNull {
             get {
-                if ((curObj["KeyManagementServiceLicensedRequests"] == null)) {
+                if ((curObj["KeyManagementServiceLicensedRequests"] is null)) {
                     return true;
                 }
                 else {
@@ -410,7 +410,7 @@
         [TypeConverter(typeof(WMIValueTypeConverter))]
         public uint KeyManagementServiceLicensedRequests {
             get {
-                if ((curObj["KeyManagementServiceLicensedRequests"] == null)) {
+                if ((curObj["KeyManagementServiceLicensedRequests"] is null)) {
                     return System.Convert.ToUInt32(0);
                 }
                 return ((uint)(curObj["KeyManagementServiceLicensedRequests"]));
@@ -421,7 +421,7 @@
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsKeyManagementServiceListeningPortNull {
             get {
-                if ((curObj["KeyManagementServiceListeningPort"] == null)) {
+                if ((curObj["KeyManagementServiceListeningPort"] is null)) {
                     return true;
                 }
                 else {
@@ -436,7 +436,7 @@
         [TypeConverter(typeof(WMIValueTypeConverter))]
         public uint KeyManagementServiceListeningPort {
             get {
-                if ((curObj["KeyManagementServiceListeningPort"] == null)) {
+                if ((curObj["KeyManagementServiceListeningPort"] is null)) {
                     return System.Convert.ToUInt32(0);
                 }
                 return ((uint)(curObj["KeyManagementServiceListeningPort"]));
@@ -457,7 +457,7 @@
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsKeyManagementServiceLowPriorityNull {
             get {
-                if ((curObj["KeyManagementServiceLowPriority"] == null)) {
+                if ((curObj["KeyManagementServiceLowPriority"] is null)) {
                     return true;
                 }
                 else {
@@ -473,7 +473,7 @@
         [TypeConverter(typeof(WMIValueTypeConverter))]
         public bool KeyManagementServiceLowPriority {
             get {
-                if ((curObj["KeyManagementServiceLowPriority"] == null)) {
+                if ((curObj["KeyManagementServiceLowPriority"] is null)) {
                     return System.Convert.ToBoolean(0);
                 }
                 return ((bool)(curObj["KeyManagementServiceLowPriority"]));
@@ -494,7 +494,7 @@
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsKeyManagementServiceNonGenuineGraceRequestsNull {
             get {
-                if ((curObj["KeyManagementServiceNonGenuineGraceRequests"] == null)) {
+                if ((curObj["KeyManagementServiceNonGenuineGraceRequests"] is null)) {
                     return true;
                 }
                 else {
@@ -509,7 +509,7 @@
         [TypeConverter(typeof(WMIValueTypeConverter))]
         public uint KeyManagementServiceNonGenuineGraceRequests {
             get {
-                if ((curObj["KeyManagementServiceNonGenuineGraceRequests"] == null)) {
+                if ((curObj["KeyManagementServiceNonGenuineGraceRequests"] is null)) {
                     return System.Convert.ToUInt32(0);
                 }
                 return ((uint)(curObj["KeyManagementServiceNonGenuineGraceRequests"]));
@@ -520,7 +520,7 @@
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsKeyManagementServiceNotificationRequestsNull {
             get {
-                if ((curObj["KeyManagementServiceNotificationRequests"] == null)) {
+                if ((curObj["KeyManagementServiceNotificationRequests"] is null)) {
                     return true;
                 }
                 else {
@@ -535,7 +535,7 @@
         [TypeConverter(typeof(WMIValueTypeConverter))]
         public uint KeyManagementServiceNotificationRequests {
             get {
-                if ((curObj["KeyManagementServiceNotificationRequests"] == null)) {
+                if ((curObj["KeyManagementServiceNotificationRequests"] is null)) {
                     return System.Convert.ToUInt32(0);
                 }
                 return ((uint)(curObj["KeyManagementServiceNotificationRequests"]));
@@ -546,7 +546,7 @@
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsKeyManagementServiceOOBGraceRequestsNull {
             get {
-                if ((curObj["KeyManagementServiceOOBGraceRequests"] == null)) {
+                if ((curObj["KeyManagementServiceOOBGraceRequests"] is null)) {
                     return true;
                 }
                 else {
@@ -561,7 +561,7 @@
         [TypeConverter(typeof(WMIValueTypeConverter))]
         public uint KeyManagementServiceOOBGraceRequests {
             get {
-                if ((curObj["KeyManagementServiceOOBGraceRequests"] == null)) {
+                if ((curObj["KeyManagementServiceOOBGraceRequests"] is null)) {
                     return System.Convert.ToUInt32(0);
                 }
                 return ((uint)(curObj["KeyManagementServiceOOBGraceRequests"]));
@@ -572,7 +572,7 @@
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsKeyManagementServiceOOTGraceRequestsNull {
             get {
-                if ((curObj["KeyManagementServiceOOTGraceRequests"] == null)) {
+                if ((curObj["KeyManagementServiceOOTGraceRequests"] is null)) {
                     return true;
                 }
                 else {
@@ -587,7 +587,7 @@
         [TypeConverter(typeof(WMIValueTypeConverter))]
         public uint KeyManagementServiceOOTGraceRequests {
             get {
-                if ((curObj["KeyManagementServiceOOTGraceRequests"] == null)) {
+                if ((curObj["KeyManagementServiceOOTGraceRequests"] is null)) {
                     return System.Convert.ToUInt32(0);
                 }
                 return ((uint)(curObj["KeyManagementServiceOOTGraceRequests"]));
@@ -598,7 +598,7 @@
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsKeyManagementServicePortNull {
             get {
-                if ((curObj["KeyManagementServicePort"] == null)) {
+                if ((curObj["KeyManagementServicePort"] is null)) {
                     return true;
                 }
                 else {
@@ -614,7 +614,7 @@
         [TypeConverter(typeof(WMIValueTypeConverter))]
         public uint KeyManagementServicePort {
             get {
-                if ((curObj["KeyManagementServicePort"] == null)) {
+                if ((curObj["KeyManagementServicePort"] is null)) {
                     return System.Convert.ToUInt32(0);
                 }
                 return ((uint)(curObj["KeyManagementServicePort"]));
@@ -634,7 +634,7 @@
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsKeyManagementServiceTotalRequestsNull {
             get {
-                if ((curObj["KeyManagementServiceTotalRequests"] == null)) {
+                if ((curObj["KeyManagementServiceTotalRequests"] is null)) {
                     return true;
                 }
                 else {
@@ -649,7 +649,7 @@
         [TypeConverter(typeof(WMIValueTypeConverter))]
         public uint KeyManagementServiceTotalRequests {
             get {
-                if ((curObj["KeyManagementServiceTotalRequests"] == null)) {
+                if ((curObj["KeyManagementServiceTotalRequests"] is null)) {
                     return System.Convert.ToUInt32(0);
                 }
                 return ((uint)(curObj["KeyManagementServiceTotalRequests"]));
@@ -660,7 +660,7 @@
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsKeyManagementServiceUnlicensedRequestsNull {
             get {
-                if ((curObj["KeyManagementServiceUnlicensedRequests"] == null)) {
+                if ((curObj["KeyManagementServiceUnlicensedRequests"] is null)) {
                     return true;
                 }
                 else {
@@ -675,7 +675,7 @@
         [TypeConverter(typeof(WMIValueTypeConverter))]
         public uint KeyManagementServiceUnlicensedRequests {
             get {
-                if ((curObj["KeyManagementServiceUnlicensedRequests"] == null)) {
+                if ((curObj["KeyManagementServiceUnlicensedRequests"] is null)) {
                     return System.Convert.ToUInt32(0);
                 }
                 return ((uint)(curObj["KeyManagementServiceUnlicensedRequests"]));
@@ -686,7 +686,7 @@
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsOA2xBiosMarkerMinorVersionNull {
             get {
-                if ((curObj["OA2xBiosMarkerMinorVersion"] == null)) {
+                if ((curObj["OA2xBiosMarkerMinorVersion"] is null)) {
                     return true;
                 }
                 else {
@@ -701,7 +701,7 @@
         [TypeConverter(typeof(WMIValueTypeConverter))]
         public uint OA2xBiosMarkerMinorVersion {
             get {
-                if ((curObj["OA2xBiosMarkerMinorVersion"] == null)) {
+                if ((curObj["OA2xBiosMarkerMinorVersion"] is null)) {
                     return System.Convert.ToUInt32(0);
                 }
                 return ((uint)(curObj["OA2xBiosMarkerMinorVersion"]));
@@ -712,7 +712,7 @@
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsOA2xBiosMarkerStatusNull {
             get {
-                if ((curObj["OA2xBiosMarkerStatus"] == null)) {
+                if ((curObj["OA2xBiosMarkerStatus"] is null)) {
                     return true;
                 }
                 else {
@@ -728,7 +728,7 @@
         [TypeConverter(typeof(WMIValueTypeConverter))]
         public uint OA2xBiosMarkerStatus {
             get {
-                if ((curObj["OA2xBiosMarkerStatus"] == null)) {
+                if ((curObj["OA2xBiosMarkerStatus"] is null)) {
                     return System.Convert.ToUInt32(0);
                 }
                 return ((uint)(curObj["OA2xBiosMarkerStatus"]));
@@ -766,7 +766,7 @@
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsPolicyCacheRefreshRequiredNull {
             get {
-                if ((curObj["PolicyCacheRefreshRequired"] == null)) {
+                if ((curObj["PolicyCacheRefreshRequired"] is null)) {
                     return true;
                 }
                 else {
@@ -782,7 +782,7 @@
         [TypeConverter(typeof(WMIValueTypeConverter))]
         public uint PolicyCacheRefreshRequired {
             get {
-                if ((curObj["PolicyCacheRefreshRequired"] == null)) {
+                if ((curObj["PolicyCacheRefreshRequired"] is null)) {
                     return System.Convert.ToUInt32(0);
                 }
                 return ((uint)(curObj["PolicyCacheRefreshRequired"]));
@@ -793,7 +793,7 @@
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsRemainingWindowsReArmCountNull {
             get {
-                if ((curObj["RemainingWindowsReArmCount"] == null)) {
+                if ((curObj["RemainingWindowsReArmCount"] is null)) {
                     return true;
                 }
                 else {
@@ -808,7 +808,7 @@
         [TypeConverter(typeof(WMIValueTypeConverter))]
         public uint RemainingWindowsReArmCount {
             get {
-                if ((curObj["RemainingWindowsReArmCount"] == null)) {
+                if ((curObj["RemainingWindowsReArmCount"] is null)) {
                     return System.Convert.ToUInt32(0);
                 }
                 return ((uint)(curObj["RemainingWindowsReArmCount"]));
@@ -819,7 +819,7 @@
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsRequiredClientCountNull {
             get {
-                if ((curObj["RequiredClientCount"] == null)) {
+                if ((curObj["RequiredClientCount"] is null)) {
                     return true;
                 }
                 else {
@@ -835,7 +835,7 @@
         [TypeConverter(typeof(WMIValueTypeConverter))]
         public uint RequiredClientCount {
             get {
-                if ((curObj["RequiredClientCount"] == null)) {
+                if ((curObj["RequiredClientCount"] is null)) {
                     return System.Convert.ToUInt32(0);
                 }
                 return ((uint)(curObj["RequiredClientCount"]));
@@ -864,7 +864,7 @@
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsTokenActivationGrantNumberNull {
             get {
-                if ((curObj["TokenActivationGrantNumber"] == null)) {
+                if ((curObj["TokenActivationGrantNumber"] is null)) {
                     return true;
                 }
                 else {
@@ -879,7 +879,7 @@
         [TypeConverter(typeof(WMIValueTypeConverter))]
         public uint TokenActivationGrantNumber {
             get {
-                if ((curObj["TokenActivationGrantNumber"] == null)) {
+                if ((curObj["TokenActivationGrantNumber"] is null)) {
                     return System.Convert.ToUInt32(0);
                 }
                 return ((uint)(curObj["TokenActivationGrantNumber"]));
@@ -899,7 +899,7 @@
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsTokenActivationILVIDNull {
             get {
-                if ((curObj["TokenActivationILVID"] == null)) {
+                if ((curObj["TokenActivationILVID"] is null)) {
                     return true;
                 }
                 else {
@@ -914,7 +914,7 @@
         [TypeConverter(typeof(WMIValueTypeConverter))]
         public uint TokenActivationILVID {
             get {
-                if ((curObj["TokenActivationILVID"] == null)) {
+                if ((curObj["TokenActivationILVID"] is null)) {
                     return System.Convert.ToUInt32(0);
                 }
                 return ((uint)(curObj["TokenActivationILVID"]));
@@ -934,7 +934,7 @@
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsVLActivationIntervalNull {
             get {
-                if ((curObj["VLActivationInterval"] == null)) {
+                if ((curObj["VLActivationInterval"] is null)) {
                     return true;
                 }
                 else {
@@ -950,7 +950,7 @@
         [TypeConverter(typeof(WMIValueTypeConverter))]
         public uint VLActivationInterval {
             get {
-                if ((curObj["VLActivationInterval"] == null)) {
+                if ((curObj["VLActivationInterval"] is null)) {
                     return System.Convert.ToUInt32(0);
                 }
                 return ((uint)(curObj["VLActivationInterval"]));
@@ -961,7 +961,7 @@
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsVLRenewalIntervalNull {
             get {
-                if ((curObj["VLRenewalInterval"] == null)) {
+                if ((curObj["VLRenewalInterval"] is null)) {
                     return true;
                 }
                 else {
@@ -977,7 +977,7 @@
         [TypeConverter(typeof(WMIValueTypeConverter))]
         public uint VLRenewalInterval {
             get {
-                if ((curObj["VLRenewalInterval"] == null)) {
+                if ((curObj["VLRenewalInterval"] is null)) {
                     return System.Convert.ToUInt32(0);
                 }
                 return ((uint)(curObj["VLRenewalInterval"]));
@@ -985,7 +985,7 @@
         }
         
         private bool CheckIfProperClass(System.Management.ManagementScope mgmtScope, System.Management.ManagementPath path, System.Management.ObjectGetOptions OptionsParam) {
-            if (((path != null) 
+            if (((path is not null) 
                         && (string.Compare(path.ClassName, this.ManagementClassName, true, System.Globalization.CultureInfo.InvariantCulture) == 0))) {
                 return true;
             }
@@ -995,13 +995,13 @@
         }
         
         private bool CheckIfProperClass(System.Management.ManagementBaseObject theObj) {
-            if (((theObj != null) 
+            if (((theObj is not null) 
                         && (string.Compare(((string)(theObj["__CLASS"])), this.ManagementClassName, true, System.Globalization.CultureInfo.InvariantCulture) == 0))) {
                 return true;
             }
             else {
                 System.Array parentClasses = ((System.Array)(theObj["__DERIVATION"]));
-                if ((parentClasses != null)) {
+                if ((parentClasses is not null)) {
                     int count = 0;
                     for (count = 0; (count < parentClasses.Length); count = (count + 1)) {
                         if ((string.Compare(((string)(parentClasses.GetValue(count))), this.ManagementClassName, true, System.Globalization.CultureInfo.InvariantCulture) == 0)) {
@@ -1215,7 +1215,7 @@
         
         private void InitializeObject(System.Management.ManagementScope mgmtScope, System.Management.ManagementPath path, System.Management.ObjectGetOptions getOptions) {
             Initialize();
-            if ((path != null)) {
+            if ((path is not null)) {
                 if ((CheckIfProperClass(mgmtScope, path, getOptions) != true)) {
                     throw new System.ArgumentException("Klassnamnet matchar inte.");
                 }
@@ -1243,8 +1243,8 @@
         }
         
         public static SoftwareLicensingServiceCollection GetInstances(System.Management.ManagementScope mgmtScope, System.Management.EnumerationOptions enumOptions) {
-            if ((mgmtScope == null)) {
-                if ((statMgmtScope == null)) {
+            if ((mgmtScope is null)) {
+                if ((statMgmtScope is null)) {
                     mgmtScope = new System.Management.ManagementScope();
                     mgmtScope.Path.NamespacePath = "root\\CimV2";
                 }
@@ -1256,7 +1256,7 @@
             pathObj.ClassName = "SoftwareLicensingService";
             pathObj.NamespacePath = "root\\CimV2";
             System.Management.ManagementClass clsObject = new System.Management.ManagementClass(mgmtScope, pathObj, null);
-            if ((enumOptions == null)) {
+            if ((enumOptions is null)) {
                 enumOptions = new System.Management.EnumerationOptions();
                 enumOptions.EnsureLocatable = true;
             }
@@ -1272,8 +1272,8 @@
         }
         
         public static SoftwareLicensingServiceCollection GetInstances(System.Management.ManagementScope mgmtScope, string condition, string[] selectedProperties) {
-            if ((mgmtScope == null)) {
-                if ((statMgmtScope == null)) {
+            if ((mgmtScope is null)) {
+                if ((statMgmtScope is null)) {
                     mgmtScope = new System.Management.ManagementScope();
                     mgmtScope.Path.NamespacePath = "root\\CimV2";
                 }
@@ -1291,7 +1291,7 @@
         [Browsable(true)]
         public static SoftwareLicensingService CreateInstance() {
             System.Management.ManagementScope mgmtScope = null;
-            if ((statMgmtScope == null)) {
+            if ((statMgmtScope is null)) {
                 mgmtScope = new System.Management.ManagementScope();
                 mgmtScope.Path.NamespacePath = CreatedWmiNamespace;
             }
@@ -1756,8 +1756,8 @@
                     if ((value.GetType() == destinationType)) {
                         return value;
                     }
-                    if ((((value == null) 
-                                && (context != null)) 
+                    if ((((value is null) 
+                                && (context is not null)) 
                                 && (context.PropertyDescriptor.ShouldSerializeValue(context.Instance) == false))) {
                         return  "NULL_ENUM_VALUE" ;
                     }
@@ -1765,14 +1765,14 @@
                 }
                 if (((baseType == typeof(bool)) 
                             && (baseType.BaseType == typeof(System.ValueType)))) {
-                    if ((((value == null) 
-                                && (context != null)) 
+                    if ((((value is null) 
+                                && (context is not null)) 
                                 && (context.PropertyDescriptor.ShouldSerializeValue(context.Instance) == false))) {
                         return "";
                     }
                     return baseConverter.ConvertTo(context, culture, value, destinationType);
                 }
-                if (((context != null) 
+                if (((context is not null) 
                             && (context.PropertyDescriptor.ShouldSerializeValue(context.Instance) == false))) {
                     return "";
                 }
