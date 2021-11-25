@@ -11,6 +11,8 @@ using System.Linq;
 using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Security;
+using System.Security.Permissions;
 
 namespace SessionPowerSaver
 {
@@ -40,7 +42,10 @@ namespace SessionPowerSaver
             }, message);
         }
 
-        static Program() => AppDomain.CurrentDomain.UnhandledException += (sender, e) => LogWrite(e.ExceptionObject.ToString());
+        static Program()
+        {
+            AppDomain.CurrentDomain.UnhandledException += (sender, e) => LogWrite(e.ExceptionObject.ToString());
+        }
 
         public static int Main()
         {
@@ -56,6 +61,10 @@ namespace SessionPowerSaver
                     currentProcessTree.Add(ppid);
 
                     using var p = Process.GetProcessById(ppid);
+                    if (p.HasExited)
+                    {
+                        break;
+                    }
                     ppid = p.QueryBasicInformation().ParentProcessId.ToInt32();
                 }
             }

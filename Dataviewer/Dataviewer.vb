@@ -2,6 +2,7 @@ Imports System.ComponentModel
 Imports System.Data
 Imports System.Threading
 Imports System.Windows.Forms
+Imports Microsoft.Win32
 
 #Disable Warning IDE1006 ' Naming Styles
 
@@ -41,12 +42,28 @@ Public Class Dataviewer
 
     End Sub
 
+    Protected Overrides Sub OnLoad(e As EventArgs)
+        MyBase.OnLoad(e)
+
+        tbDatasource.Text = Registry.GetValue("HKEY_CURRENT_USER\Software\LTR Data\DataViewer", "DataSource", Nothing)?.ToString()
+        tbTable.Text = Registry.GetValue("HKEY_CURRENT_USER\Software\LTR Data\DataViewer", "Query", Nothing)?.ToString()
+    End Sub
+
+    Protected Overrides Sub OnShown(e As EventArgs)
+        MyBase.OnShown(e)
+
+        tbTable.Select()
+    End Sub
+
     Protected Overrides Sub OnClosing(e As CancelEventArgs)
         MyBase.OnClosing(e)
 
         If BindingManager IsNot Nothing Then
             BindingManager.EndCurrentEdit()
         End If
+
+        Registry.SetValue("HKEY_CURRENT_USER\Software\LTR Data\DataViewer", "DataSource", tbDatasource.Text)
+        Registry.SetValue("HKEY_CURRENT_USER\Software\LTR Data\DataViewer", "Query", tbTable.Text)
     End Sub
 
     Private Sub btnLoad_Click(sender As Object, e As EventArgs) Handles btnLoad.Click
@@ -144,12 +161,6 @@ Public Class Dataviewer
             .SelectionStart = 0
             .SelectionLength = .TextLength
         End With
-    End Sub
-
-    Protected Overrides Sub OnShown(e As EventArgs)
-        MyBase.OnShown(e)
-
-        tbTable.Select()
     End Sub
 
     Private Sub DataGridView_DataError(sender As Object, e As DataGridViewDataErrorEventArgs) Handles DataGridView.DataError

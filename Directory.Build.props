@@ -15,6 +15,7 @@
     <LangVersion Condition="'$(MSBuildProjectExtension)' == '.csproj'">9.0</LangVersion>
     <OptionStrict Condition="'$(MSBuildProjectExtension)' == '.vbproj'">On</OptionStrict>
     <DelaySign>false</DelaySign>
+	<RollForward>LatestMajor</RollForward>
   </PropertyGroup>
 
   <PropertyGroup>
