@@ -91,8 +91,7 @@ namespace DiskVolumes
             }
             catch (Exception ex)
             {
-                if (!(ex is Win32Exception) ||
-                    (ex as Win32Exception).NativeErrorCode != 1)
+                if (ex is not Win32Exception wex || wex.NativeErrorCode != 1)
                 {
                     Console.Error.WriteLine(ex.JoinMessages());
                 }
