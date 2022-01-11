@@ -10,6 +10,9 @@
     <Reference Include="LTRLib40">
       <HintPath>..\..\LTRLib\$(Configuration)\$(TargetFramework)\LTRLib40.dll</HintPath>
     </Reference>
+    <Reference Include="LTRLib.Windows">
+      <HintPath>..\..\LTRLib\$(Configuration)\$(TargetFramework)\LTRLib.Windows.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

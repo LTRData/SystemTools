@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Security;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Threading;
 
 #pragma warning disable IDE0079 // Remove unnecessary suppression
@@ -18,7 +19,18 @@ namespace telnets
 {
     public static class Program
     {
-        public static readonly string telnet_exe = Environment.GetEnvironmentVariable("TELNET") ?? Path.Combine(Environment.SystemDirectory, "telnet.exe");
+        public static readonly string telnet_exe = Environment.GetEnvironmentVariable("TELNET") ?? GetTelnetPath();
+
+        private static string GetTelnetPath()
+        {
+#if !NETFRAMEWORK
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                return "telnet";
+            }
+#endif
+            return Path.Combine(Environment.SystemDirectory, "telnet.exe");
+        }
 
         public static void WriteError(string msg)
         {
@@ -40,7 +52,7 @@ namespace telnets
                 }
 
                 string remote_host;
-                int remote_port = 992;
+                var remote_port = 992;
                 var options = Enumerable.Empty<string>();
 
                 if (args.Length >= 2)
@@ -88,7 +100,7 @@ namespace telnets
                 {
                     FileName = telnet_exe,
                     Arguments = telnet_arguments,
-                    UseShellExecute = false                    
+                    UseShellExecute = false
                 };
 
                 var telnet_ps = Process.Start(telnet_start_info);

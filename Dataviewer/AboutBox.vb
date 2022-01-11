@@ -6,26 +6,31 @@ Public NotInheritable Class AboutBox
     Protected Overrides Sub OnLoad(e As EventArgs)
         MyBase.OnLoad(e)
 
-        Dim asm = Process.GetCurrentProcess().MainModule.FileVersionInfo
+        Dim asm = Assembly.GetExecutingAssembly()
+        Dim productName = CType(asm.GetCustomAttributes(GetType(AssemblyProductAttribute), False)(0), AssemblyProductAttribute).Product
+        Dim title = CType(asm.GetCustomAttributes(GetType(AssemblyTitleAttribute), False)(0), AssemblyTitleAttribute).Title
+        Dim fileVersion = CType(asm.GetCustomAttributes(GetType(AssemblyFileVersionAttribute), False)(0), AssemblyFileVersionAttribute).Version
+        Dim legalCopyright = CType(asm.GetCustomAttributes(GetType(AssemblyCopyrightAttribute), False)(0), AssemblyCopyrightAttribute).Copyright
+        Dim fileDescription = CType(asm.GetCustomAttributes(GetType(AssemblyDescriptionAttribute), False)(0), AssemblyDescriptionAttribute).Description
 
         ' Set the title of the form.
         Dim ApplicationTitle As String
-        If asm.ProductName <> "" Then
-            ApplicationTitle = asm.ProductName
+        If title <> "" Then
+            ApplicationTitle = title
         Else
-            ApplicationTitle = System.IO.Path.GetFileNameWithoutExtension(asm.FileName)
+            ApplicationTitle = IO.Path.GetFileNameWithoutExtension(asm.Location)
         End If
-        Text = $"About {ApplicationTitle }"
+        Text = $"About {ApplicationTitle}"
         ' Initialize all of the text displayed on the About Box.
         ' TODO: Customize the application's assembly information in the "Application" pane of the project 
         '    properties dialog (under the "Project" menu).
-        LabelProductName.Text = asm.ProductName
-        LabelVersion.Text = $"Version {asm.FileVersion }"
-        LabelCopyright.Text = asm.LegalCopyright
-        LabelCompanyName.Text = asm.CompanyName
+        LabelProductName.Text = productName
+        LabelVersion.Text = $"Version {fileVersion}"
+        LabelCopyright.Text = legalCopyright
+        LabelCompanyName.Text = CompanyName
 
         Dim sb = New StringBuilder().
-            AppendLine(asm.FileDescription).
+            AppendLine(fileDescription).
             AppendLine().
             Append("Runtime version ").
             AppendLine(Environment.Version.ToString()).

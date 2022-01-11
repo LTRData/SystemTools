@@ -114,10 +114,7 @@ namespace dssearch
             return 0;
         }
 
-        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e) => throw new NotImplementedException();
 
         public static void PrintProp(DirectoryEntry user)
         {

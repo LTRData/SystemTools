@@ -12,7 +12,7 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyDescription("Utility to make ODBC connections, send SQL queries and update data.")> 
 <Assembly: AssemblyCompany("LTR Data")> 
 <Assembly: AssemblyProduct("ODBC Dataviewer")>
-<Assembly: AssemblyCopyright("Copyright © Olof Lagerkvist, LTR Data 2007-2021")>
+<Assembly: AssemblyCopyright("Copyright © Olof Lagerkvist, LTR Data 2007-2022")>
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(False)>

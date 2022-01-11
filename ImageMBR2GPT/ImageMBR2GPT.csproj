@@ -9,9 +9,6 @@
     <Reference Include="LTRLib40">
       <HintPath>..\..\LTRLib\$(Configuration)\$(TargetFramework)\LTRLib40.dll</HintPath>
     </Reference>
-    <Reference Include="LTRLib40.Interop">
-      <HintPath>..\..\LTRLib\$(Configuration)\$(TargetFramework)\LTRLib40.Interop.dll</HintPath>
-    </Reference>
     <Reference Include="DiscUtils.Core">
       <HintPath>$(DiscUtilsPath)\DiscUtils.Core.dll</HintPath>
     </Reference>

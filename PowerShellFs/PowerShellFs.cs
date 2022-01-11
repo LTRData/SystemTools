@@ -192,10 +192,7 @@ namespace PowerShellFs
             return NtStatus.NotImplemented;
         }
 
-        public NtStatus FlushFileBuffers(string fileName, IDokanFileInfo info)
-        {
-            return NtStatus.Success;
-        }
+        public NtStatus FlushFileBuffers(string fileName, IDokanFileInfo info) => NtStatus.Success;
 
         public NtStatus GetFileInformation(string fileName, out ByHandleFileInformation fileInfo, IDokanFileInfo info)
         {
@@ -261,10 +258,7 @@ namespace PowerShellFs
             return NtStatus.Success;
         }
 
-        public NtStatus FindFiles(string fileName, out IEnumerable<FindFileInformation> files, IDokanFileInfo info)
-        {
-            return FindFilesWithPattern(fileName, "*", out files, info);
-        }
+        public NtStatus FindFiles(string fileName, out IEnumerable<FindFileInformation> files, IDokanFileInfo info) => FindFilesWithPattern(fileName, "*", out files, info);
 
         public static string TranslatePath(string path)
         {
@@ -351,50 +345,23 @@ namespace PowerShellFs
             }
         }
 
-        public NtStatus SetFileAttributes(string fileName, FileAttributes attributes, IDokanFileInfo info)
-        {
-            return NtStatus.NotImplemented;
-        }
+        public NtStatus SetFileAttributes(string fileName, FileAttributes attributes, IDokanFileInfo info) => NtStatus.NotImplemented;
 
-        public NtStatus SetFileTime(string fileName, DateTime? creationTime, DateTime? lastAccessTime, DateTime? lastWriteTime, IDokanFileInfo info)
-        {
-            return NtStatus.NotImplemented;
-        }
+        public NtStatus SetFileTime(string fileName, DateTime? creationTime, DateTime? lastAccessTime, DateTime? lastWriteTime, IDokanFileInfo info) => NtStatus.NotImplemented;
 
-        public NtStatus DeleteFile(string fileName, IDokanFileInfo info)
-        {
-            return NtStatus.NotImplemented;
-        }
+        public NtStatus DeleteFile(string fileName, IDokanFileInfo info) => NtStatus.NotImplemented;
 
-        public NtStatus DeleteDirectory(string fileName, IDokanFileInfo info)
-        {
-            return NtStatus.NotImplemented;
-        }
+        public NtStatus DeleteDirectory(string fileName, IDokanFileInfo info) => NtStatus.NotImplemented;
 
-        public NtStatus MoveFile(string oldName, string newName, bool replace, IDokanFileInfo info)
-        {
-            return NtStatus.NotImplemented;
-        }
+        public NtStatus MoveFile(string oldName, string newName, bool replace, IDokanFileInfo info) => NtStatus.NotImplemented;
 
-        public NtStatus SetEndOfFile(string fileName, long length, IDokanFileInfo info)
-        {
-            return NtStatus.NotImplemented;
-        }
+        public NtStatus SetEndOfFile(string fileName, long length, IDokanFileInfo info) => NtStatus.NotImplemented;
 
-        public NtStatus SetAllocationSize(string fileName, long length, IDokanFileInfo info)
-        {
-            return NtStatus.NotImplemented;
-        }
+        public NtStatus SetAllocationSize(string fileName, long length, IDokanFileInfo info) => NtStatus.NotImplemented;
 
-        public NtStatus LockFile(string fileName, long offset, long length, IDokanFileInfo info)
-        {
-            return NtStatus.NotImplemented;
-        }
+        public NtStatus LockFile(string fileName, long offset, long length, IDokanFileInfo info) => NtStatus.NotImplemented;
 
-        public NtStatus UnlockFile(string fileName, long offset, long length, IDokanFileInfo info)
-        {
-            return NtStatus.NotImplemented;
-        }
+        public NtStatus UnlockFile(string fileName, long offset, long length, IDokanFileInfo info) => NtStatus.NotImplemented;
 
         public NtStatus GetDiskFreeSpace(out long freeBytesAvailable, out long totalNumberOfBytes, out long totalNumberOfFreeBytes, IDokanFileInfo info)
         {
@@ -419,20 +386,11 @@ namespace PowerShellFs
             return NtStatus.NotImplemented;
         }
 
-        public NtStatus SetFileSecurity(string fileName, FileSystemSecurity security, AccessControlSections sections, IDokanFileInfo info)
-        {
-            return NtStatus.NotImplemented;
-        }
+        public NtStatus SetFileSecurity(string fileName, FileSystemSecurity security, AccessControlSections sections, IDokanFileInfo info) => NtStatus.NotImplemented;
 
-        public NtStatus Mounted(IDokanFileInfo info)
-        {
-            return NtStatus.Success;
-        }
+        public NtStatus Mounted(IDokanFileInfo info) => NtStatus.Success;
 
-        public NtStatus Unmounted(IDokanFileInfo info)
-        {
-            return NtStatus.Success;
-        }
+        public NtStatus Unmounted(IDokanFileInfo info) => NtStatus.Success;
 
         public NtStatus FindStreams(string fileName, out IEnumerable<FindFileInformation> streams, IDokanFileInfo info)
         {

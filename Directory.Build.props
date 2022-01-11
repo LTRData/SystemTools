@@ -21,7 +21,7 @@
   <PropertyGroup>
     <DiscUtilsPath Condition="'$(TargetFramework.CompareTo(`net5`))' &lt; 0">..\..\DiscUtils\Library\DiscUtils\bin\$(Configuration)\net40</DiscUtilsPath>
     <DiscUtilsPath Condition="'$(TargetFramework.CompareTo(`net5`))' &gt; 0">..\..\DiscUtils\Library\DiscUtils\bin\$(Configuration)\netstandard2.0</DiscUtilsPath>
-    <DokanNetPath>..\..\Repos\dokan-dotnet\$(Configuration)\$(TargetFramework)</DokanNetPath>
+    <DokanNetPath>..\..\dokan-dotnet\$(Configuration)\$(TargetFramework)</DokanNetPath>
   </PropertyGroup>
   
 </Project>

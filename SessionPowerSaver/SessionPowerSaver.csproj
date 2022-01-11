@@ -3,7 +3,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFrameworks>net47;net5.0-windows</TargetFrameworks>
+    <TargetFrameworks>net48;netcoreapp3.1</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
@@ -19,8 +19,8 @@
     <Reference Include="LTRLib40.Extended">
       <HintPath>..\..\LTRLib\$(Configuration)\$(TargetFramework)\LTRLib40.Extended.dll</HintPath>
     </Reference>
-    <Reference Include="LTRLib.Unsafe">
-      <HintPath>..\..\LTRLib\$(Configuration)\$(TargetFramework)\LTRLib.Unsafe.dll</HintPath>
+    <Reference Include="LTRLib.Windows.Extended">
+      <HintPath>..\..\LTRLib\$(Configuration)\$(TargetFramework)\LTRLib.Windows.Extended.dll</HintPath>
     </Reference>
   </ItemGroup>
 

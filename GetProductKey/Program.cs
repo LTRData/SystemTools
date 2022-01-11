@@ -43,14 +43,13 @@ namespace GetProductKey
             }
         }
 
-        private static string FormatMessage(this Exception ex)
-        {
+        private static string FormatMessage(this Exception ex) =>
 #if DEBUG
-            return ex.ToString();
+            ex.ToString();
 #else
-            return ex.GetBaseException().Message; 
+            ex.GetBaseException().Message; 
 #endif
-        }
+
 
         public static int Main(params string[] args)
         {
@@ -286,12 +285,14 @@ GetProductKey D:\path\windows_setup.iso");
 
         private static DateTime? GetInstallTime(Func<string, object> value)
         {
-            if (value("InstallTime") is long time)
+            if (value("InstallTime") is long time &&
+	       time != 0)
             {
                 return DateTime.FromFileTimeUtc(time);
             }
 
-            if (value("InstallDate") is int date)
+            if (value("InstallDate") is int date &&
+	       date != 0)
             {
                 return new DateTime(1970, 1, 1).AddSeconds(date);
             }
