@@ -78,7 +78,7 @@ namespace GetProductKey
             {
                 Console.WriteLine(@"GetProductKey
 A tool to show Windows installation information including product key.
-Copyright (c) Olof Lagerkvist, LTR Data, 2021
+Copyright (c) Olof Lagerkvist, LTR Data, 2021-2022
 http://ltr-data.se  https://github.com/LTRData
 
 Syntax to query current machine (Windows only):
@@ -170,7 +170,7 @@ GetProductKey D:\path\windows_setup.iso");
 
                             foreach (var fs in image.EnumerateWimImages())
                             {
-                                var hive = new DiscUtilsRegistryHive(fs.Value.OpenRead(), ownership: Ownership.Dispose);
+                                var hive = new DiscUtilsRegistryHive(fs.Value, FileAccess.Read);
                                 var key = hive.Root.OpenSubKey(@"Microsoft\Windows NT\CurrentVersion");
                                 offline_root_keys.Add(key);
                                 value_getters.Add(new(@$"{arg}\{wiminfo.FullName} index {fs.Key}", name => { lock (file) { return key.GetValue(name); } }));
@@ -185,7 +185,7 @@ GetProductKey D:\path\windows_setup.iso");
 
                             foreach (var fs in image.EnumerateWimImages())
                             {
-                                var hive = new DiscUtilsRegistryHive(fs.Value.OpenRead(), ownership: Ownership.Dispose);
+                                var hive = new DiscUtilsRegistryHive(fs.Value, FileAccess.Read);
                                 var key = hive.Root.OpenSubKey(@"Microsoft\Windows NT\CurrentVersion");
                                 offline_root_keys.Add(key);
                                 value_getters.Add(new($"{arg} index {fs.Key}", name => { lock (file) { return key.GetValue(name); } }));
@@ -204,7 +204,7 @@ GetProductKey D:\path\windows_setup.iso");
 
                             foreach (var fs in image.EnumerateVirtualDiskImageFileSystems())
                             {
-                                var hive = new DiscUtilsRegistryHive(fs.Value.OpenRead(), ownership: Ownership.Dispose);
+                                var hive = new DiscUtilsRegistryHive(fs.Value, FileAccess.Read);
                                 var key = hive.Root.OpenSubKey(@"Microsoft\Windows NT\CurrentVersion");
                                 offline_root_keys.Add(key);
                                 value_getters.Add(new($"{arg} partition {fs.Key}", name => { lock (image) { return key.GetValue(name); } }));

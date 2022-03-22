@@ -37,7 +37,7 @@ namespace PowerShellFs
             public byte[] FileData;
         }
 
-        public NtStatus CreateFile(string fileName, NativeFileAccess access, FileShare share, FileMode mode, FileOptions options, FileAttributes attributes, IDokanFileInfo info)
+        public NtStatus CreateFile(string fileName, NativeFileAccess access, FileShare share, FileMode mode, FileOptions options, FileAttributes attributes, ref DokanFileInfo info)
         {
             var path = TranslatePath(fileName);
 
@@ -85,20 +85,20 @@ namespace PowerShellFs
             return NtStatus.Success;
         }
 
-        public void Cleanup(string fileName, IDokanFileInfo info)
+        public void Cleanup(string fileName, ref DokanFileInfo info)
         {
-            if (info?.Context is IDisposable context)
+            if (info.Context is IDisposable context)
             {
                 context.Dispose();
                 info.Context = null;
             }
         }
 
-        public void CloseFile(string fileName, IDokanFileInfo info)
+        public void CloseFile(string fileName, ref DokanFileInfo info)
         {
         }
 
-        unsafe public NtStatus ReadFile(string fileName, byte[] buffer, out int bytesRead, long offset, IDokanFileInfo info)
+        unsafe public NtStatus ReadFile(string fileName, byte[] buffer, out int bytesRead, long offset, in DokanFileInfo info)
         {
             fixed (byte* ptr = &buffer[0])
             {
@@ -106,7 +106,7 @@ namespace PowerShellFs
             }
         }
 
-        public NtStatus ReadFile(string fileName, IntPtr buffer, uint bufferLength, out int bytesRead, long offset, IDokanFileInfo info)
+        public NtStatus ReadFile(string fileName, IntPtr buffer, uint bufferLength, out int bytesRead, long offset, in DokanFileInfo info)
         {
             var path = TranslatePath(fileName);
 
@@ -180,21 +180,21 @@ namespace PowerShellFs
             return NtStatus.Success;
         }
 
-        public NtStatus WriteFile(string fileName, IntPtr buffer, uint bufferLength, out int bytesWritten, long offset, IDokanFileInfo info)
+        public NtStatus WriteFile(string fileName, IntPtr buffer, uint bufferLength, out int bytesWritten, long offset, in DokanFileInfo info)
         {
             bytesWritten = 0;
             return NtStatus.NotImplemented;
         }
 
-        public NtStatus WriteFile(string fileName, byte[] buffer, out int bytesWritten, long offset, IDokanFileInfo info)
+        public NtStatus WriteFile(string fileName, byte[] buffer, out int bytesWritten, long offset, in DokanFileInfo info)
         {
             bytesWritten = 0;
             return NtStatus.NotImplemented;
         }
 
-        public NtStatus FlushFileBuffers(string fileName, IDokanFileInfo info) => NtStatus.Success;
+        public NtStatus FlushFileBuffers(string fileName, in DokanFileInfo info) => NtStatus.Success;
 
-        public NtStatus GetFileInformation(string fileName, out ByHandleFileInformation fileInfo, IDokanFileInfo info)
+        public NtStatus GetFileInformation(string fileName, out ByHandleFileInformation fileInfo, in DokanFileInfo info)
         {
             var path = TranslatePath(fileName);
 
@@ -258,7 +258,7 @@ namespace PowerShellFs
             return NtStatus.Success;
         }
 
-        public NtStatus FindFiles(string fileName, out IEnumerable<FindFileInformation> files, IDokanFileInfo info) => FindFilesWithPattern(fileName, "*", out files, info);
+        public NtStatus FindFiles(string fileName, out IEnumerable<FindFileInformation> files, in DokanFileInfo info) => FindFilesWithPattern(fileName, "*", out files, info);
 
         public static string TranslatePath(string path)
         {
@@ -286,7 +286,7 @@ namespace PowerShellFs
             return path;
         }
 
-        public NtStatus FindFilesWithPattern(string fileName, string searchPattern, out IEnumerable<FindFileInformation> files, IDokanFileInfo info)
+        public NtStatus FindFilesWithPattern(string fileName, string searchPattern, out IEnumerable<FindFileInformation> files, in DokanFileInfo info)
         {
             searchPattern = searchPattern.Replace('<', '*');
 
@@ -345,25 +345,25 @@ namespace PowerShellFs
             }
         }
 
-        public NtStatus SetFileAttributes(string fileName, FileAttributes attributes, IDokanFileInfo info) => NtStatus.NotImplemented;
+        public NtStatus SetFileAttributes(string fileName, FileAttributes attributes, in DokanFileInfo info) => NtStatus.NotImplemented;
 
-        public NtStatus SetFileTime(string fileName, DateTime? creationTime, DateTime? lastAccessTime, DateTime? lastWriteTime, IDokanFileInfo info) => NtStatus.NotImplemented;
+        public NtStatus SetFileTime(string fileName, DateTime? creationTime, DateTime? lastAccessTime, DateTime? lastWriteTime, in DokanFileInfo info) => NtStatus.NotImplemented;
 
-        public NtStatus DeleteFile(string fileName, IDokanFileInfo info) => NtStatus.NotImplemented;
+        public NtStatus DeleteFile(string fileName, in DokanFileInfo info) => NtStatus.NotImplemented;
 
-        public NtStatus DeleteDirectory(string fileName, IDokanFileInfo info) => NtStatus.NotImplemented;
+        public NtStatus DeleteDirectory(string fileName, in DokanFileInfo info) => NtStatus.NotImplemented;
 
-        public NtStatus MoveFile(string oldName, string newName, bool replace, IDokanFileInfo info) => NtStatus.NotImplemented;
+        public NtStatus MoveFile(string oldName, string newName, bool replace, ref DokanFileInfo info) => NtStatus.NotImplemented;
 
-        public NtStatus SetEndOfFile(string fileName, long length, IDokanFileInfo info) => NtStatus.NotImplemented;
+        public NtStatus SetEndOfFile(string fileName, long length, in DokanFileInfo info) => NtStatus.NotImplemented;
 
-        public NtStatus SetAllocationSize(string fileName, long length, IDokanFileInfo info) => NtStatus.NotImplemented;
+        public NtStatus SetAllocationSize(string fileName, long length, in DokanFileInfo info) => NtStatus.NotImplemented;
 
-        public NtStatus LockFile(string fileName, long offset, long length, IDokanFileInfo info) => NtStatus.NotImplemented;
+        public NtStatus LockFile(string fileName, long offset, long length, in DokanFileInfo info) => NtStatus.NotImplemented;
 
-        public NtStatus UnlockFile(string fileName, long offset, long length, IDokanFileInfo info) => NtStatus.NotImplemented;
+        public NtStatus UnlockFile(string fileName, long offset, long length, in DokanFileInfo info) => NtStatus.NotImplemented;
 
-        public NtStatus GetDiskFreeSpace(out long freeBytesAvailable, out long totalNumberOfBytes, out long totalNumberOfFreeBytes, IDokanFileInfo info)
+        public NtStatus GetDiskFreeSpace(out long freeBytesAvailable, out long totalNumberOfBytes, out long totalNumberOfFreeBytes, in DokanFileInfo info)
         {
             freeBytesAvailable = 0;
             totalNumberOfBytes = 0;
@@ -371,7 +371,7 @@ namespace PowerShellFs
             return NtStatus.Success;
         }
 
-        public NtStatus GetVolumeInformation(out string volumeLabel, out FileSystemFeatures features, out string fileSystemName, out uint maximumComponentLength, ref uint volumeSerialNumber, IDokanFileInfo info)
+        public NtStatus GetVolumeInformation(out string volumeLabel, out FileSystemFeatures features, out string fileSystemName, out uint maximumComponentLength, ref uint volumeSerialNumber, in DokanFileInfo info)
         {
             volumeLabel = "PowerShell";
             features = FileSystemFeatures.ReadOnlyVolume | FileSystemFeatures.UnicodeOnDisk;
@@ -380,19 +380,19 @@ namespace PowerShellFs
             return NtStatus.Success;
         }
 
-        public NtStatus GetFileSecurity(string fileName, out FileSystemSecurity security, AccessControlSections sections, IDokanFileInfo info)
+        public NtStatus GetFileSecurity(string fileName, out FileSystemSecurity security, AccessControlSections sections, in DokanFileInfo info)
         {
             security = null;
             return NtStatus.NotImplemented;
         }
 
-        public NtStatus SetFileSecurity(string fileName, FileSystemSecurity security, AccessControlSections sections, IDokanFileInfo info) => NtStatus.NotImplemented;
+        public NtStatus SetFileSecurity(string fileName, FileSystemSecurity security, AccessControlSections sections, in DokanFileInfo info) => NtStatus.NotImplemented;
 
-        public NtStatus Mounted(IDokanFileInfo info) => NtStatus.Success;
+        public NtStatus Mounted(string drive, in DokanFileInfo info) => NtStatus.Success;
 
-        public NtStatus Unmounted(IDokanFileInfo info) => NtStatus.Success;
+        public NtStatus Unmounted(in DokanFileInfo info) => NtStatus.Success;
 
-        public NtStatus FindStreams(string fileName, out IEnumerable<FindFileInformation> streams, IDokanFileInfo info)
+        public NtStatus FindStreams(string fileName, out IEnumerable<FindFileInformation> streams, in DokanFileInfo info)
         {
             streams = null;
             return NtStatus.NotImplemented;

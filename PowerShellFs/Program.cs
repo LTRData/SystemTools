@@ -57,7 +57,7 @@ namespace PowerShellFs
                 e.Cancel = true;
             };
 
-            fs.Mount("Q:", DokanOptions.EnableFCBGC | DokanOptions.WriteProtection);
+            fs.Mount("Q:", DokanOptions.WriteProtection);
         }
     }
 }
