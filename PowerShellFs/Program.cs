@@ -36,6 +36,8 @@ namespace PowerShellFs
 
         public static void Main(params string[] args)
         {
+            Dokan.Init();
+
             RunspaceConnectionInfo ci = null;
 
             if (args?.FirstOrDefault() is string host)

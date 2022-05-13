@@ -3,7 +3,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>netcoreapp3.1;net35;net40</TargetFrameworks>
+    <TargetFrameworks>net6.0-windows;net35;net40</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>

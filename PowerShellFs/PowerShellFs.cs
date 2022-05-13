@@ -37,9 +37,9 @@ namespace PowerShellFs
             public byte[] FileData;
         }
 
-        public NtStatus CreateFile(string fileName, NativeFileAccess access, FileShare share, FileMode mode, FileOptions options, FileAttributes attributes, ref DokanFileInfo info)
+        public NtStatus CreateFile(ReadOnlySpan<char> fileNamePtr, NativeFileAccess access, FileShare share, FileMode mode, FileOptions options, FileAttributes attributes, ref DokanFileInfo info)
         {
-            var path = TranslatePath(fileName);
+            var path = TranslatePath(fileNamePtr);
 
             if (string.IsNullOrWhiteSpace(path))
             {
@@ -85,7 +85,7 @@ namespace PowerShellFs
             return NtStatus.Success;
         }
 
-        public void Cleanup(string fileName, ref DokanFileInfo info)
+        public void Cleanup(ReadOnlySpan<char> fileNamePtr, ref DokanFileInfo info)
         {
             if (info.Context is IDisposable context)
             {
@@ -94,21 +94,21 @@ namespace PowerShellFs
             }
         }
 
-        public void CloseFile(string fileName, ref DokanFileInfo info)
+        public void CloseFile(ReadOnlySpan<char> fileNamePtr, ref DokanFileInfo info)
         {
         }
 
-        unsafe public NtStatus ReadFile(string fileName, byte[] buffer, out int bytesRead, long offset, in DokanFileInfo info)
+        unsafe public NtStatus ReadFile(ReadOnlySpan<char> fileNamePtr, byte[] buffer, out int bytesRead, long offset, in DokanFileInfo info)
         {
             fixed (byte* ptr = &buffer[0])
             {
-                return ReadFile(fileName, new IntPtr(ptr), (uint)buffer.Length, out bytesRead, offset, info);
+                return ReadFile(fileNamePtr, new IntPtr(ptr), (uint)buffer.Length, out bytesRead, offset, info);
             }
         }
 
-        public NtStatus ReadFile(string fileName, IntPtr buffer, uint bufferLength, out int bytesRead, long offset, in DokanFileInfo info)
+        public NtStatus ReadFile(ReadOnlySpan<char> fileNamePtr, IntPtr buffer, uint bufferLength, out int bytesRead, long offset, in DokanFileInfo info)
         {
-            var path = TranslatePath(fileName);
+            var path = TranslatePath(fileNamePtr);
 
             bytesRead = 0;
 
@@ -180,23 +180,23 @@ namespace PowerShellFs
             return NtStatus.Success;
         }
 
-        public NtStatus WriteFile(string fileName, IntPtr buffer, uint bufferLength, out int bytesWritten, long offset, in DokanFileInfo info)
+        public NtStatus WriteFile(ReadOnlySpan<char> fileNamePtr, IntPtr buffer, uint bufferLength, out int bytesWritten, long offset, in DokanFileInfo info)
         {
             bytesWritten = 0;
             return NtStatus.NotImplemented;
         }
 
-        public NtStatus WriteFile(string fileName, byte[] buffer, out int bytesWritten, long offset, in DokanFileInfo info)
+        public NtStatus WriteFile(ReadOnlySpan<char> fileNamePtr, byte[] buffer, out int bytesWritten, long offset, in DokanFileInfo info)
         {
             bytesWritten = 0;
             return NtStatus.NotImplemented;
         }
 
-        public NtStatus FlushFileBuffers(string fileName, in DokanFileInfo info) => NtStatus.Success;
+        public NtStatus FlushFileBuffers(ReadOnlySpan<char> fileNamePtr, in DokanFileInfo info) => NtStatus.Success;
 
-        public NtStatus GetFileInformation(string fileName, out ByHandleFileInformation fileInfo, in DokanFileInfo info)
+        public NtStatus GetFileInformation(ReadOnlySpan<char> fileNamePtr, out ByHandleFileInformation fileInfo, in DokanFileInfo info)
         {
-            var path = TranslatePath(fileName);
+            var path = TranslatePath(fileNamePtr);
 
             if (string.IsNullOrWhiteSpace(path))
             {
@@ -258,16 +258,16 @@ namespace PowerShellFs
             return NtStatus.Success;
         }
 
-        public NtStatus FindFiles(string fileName, out IEnumerable<FindFileInformation> files, in DokanFileInfo info) => FindFilesWithPattern(fileName, "*", out files, info);
+        public NtStatus FindFiles(ReadOnlySpan<char> fileNamePtr, out IEnumerable<FindFileInformation> files, in DokanFileInfo info) => FindFilesWithPattern(fileNamePtr, "*".AsSpan(), out files, info);
 
-        public static string TranslatePath(string path)
+        public static string TranslatePath(ReadOnlySpan<char> path)
         {
-            if (path is not null && path.Length > 0 && path[0] == '\\')
+            if (path.Length > 0 && path[0] == '\\')
             {
-                path = path.Substring(1);
+                path = path.Slice(1);
             }
 
-            if (string.IsNullOrWhiteSpace(path))
+            if (path.IsWhiteSpace())
             {
                 return string.Empty;
             }
@@ -276,21 +276,19 @@ namespace PowerShellFs
 
             if (firstDirDelimiter >= 0)
             {
-                path = path.Insert(firstDirDelimiter, ":");
+                return path.ToString().Insert(firstDirDelimiter, ":");
             }
             else
             {
-                path += @":\";
+                return path.ToString() + @":\";
             }
-
-            return path;
         }
 
-        public NtStatus FindFilesWithPattern(string fileName, string searchPattern, out IEnumerable<FindFileInformation> files, in DokanFileInfo info)
+        public NtStatus FindFilesWithPattern(ReadOnlySpan<char> fileNamePtr, ReadOnlySpan<char> searchPatternPtr, out IEnumerable<FindFileInformation> files, in DokanFileInfo info)
         {
-            searchPattern = searchPattern.Replace('<', '*');
+            var searchPattern = searchPatternPtr.ToString().Replace('<', '*');
 
-            var path = TranslatePath(fileName);
+            var path = TranslatePath(fileNamePtr);
 
             if (path.IndexOfAny(new[] { '?', '*' }) < 0)
             {
@@ -306,9 +304,9 @@ namespace PowerShellFs
                 {
                     var drives = ps.AddCommand("Get-PSDrive").Invoke().Select(drive => drive.Properties["Name"].Value as string);
 
-                    if (fileName.IndexOfAny(new[] { '?', '*' }) >= 0)
+                    if (fileNamePtr.IndexOfAny(new[] { '?', '*' }) >= 0)
                     {
-                        Func<string, bool> regx = Utilities.ConvertWildcardsToRegEx(fileName.TrimStart('\\')).IsMatch;
+                        Func<string, bool> regx = Utilities.ConvertWildcardsToRegEx(fileNamePtr.TrimStart('\\').ToString()).IsMatch;
                         drives = drives.Where(regx);
                     }
                     if (!"*".Equals(searchPattern, StringComparison.Ordinal))
@@ -345,23 +343,23 @@ namespace PowerShellFs
             }
         }
 
-        public NtStatus SetFileAttributes(string fileName, FileAttributes attributes, in DokanFileInfo info) => NtStatus.NotImplemented;
+        public NtStatus SetFileAttributes(ReadOnlySpan<char> fileNamePtr, FileAttributes attributes, in DokanFileInfo info) => NtStatus.NotImplemented;
 
-        public NtStatus SetFileTime(string fileName, DateTime? creationTime, DateTime? lastAccessTime, DateTime? lastWriteTime, in DokanFileInfo info) => NtStatus.NotImplemented;
+        public NtStatus SetFileTime(ReadOnlySpan<char> fileNamePtr, DateTime? creationTime, DateTime? lastAccessTime, DateTime? lastWriteTime, in DokanFileInfo info) => NtStatus.NotImplemented;
 
-        public NtStatus DeleteFile(string fileName, in DokanFileInfo info) => NtStatus.NotImplemented;
+        public NtStatus DeleteFile(ReadOnlySpan<char> fileNamePtr, in DokanFileInfo info) => NtStatus.NotImplemented;
 
-        public NtStatus DeleteDirectory(string fileName, in DokanFileInfo info) => NtStatus.NotImplemented;
+        public NtStatus DeleteDirectory(ReadOnlySpan<char> fileNamePtr, in DokanFileInfo info) => NtStatus.NotImplemented;
 
-        public NtStatus MoveFile(string oldName, string newName, bool replace, ref DokanFileInfo info) => NtStatus.NotImplemented;
+        public NtStatus MoveFile(ReadOnlySpan<char> oldName, ReadOnlySpan<char> newName, bool replace, ref DokanFileInfo info) => NtStatus.NotImplemented;
 
-        public NtStatus SetEndOfFile(string fileName, long length, in DokanFileInfo info) => NtStatus.NotImplemented;
+        public NtStatus SetEndOfFile(ReadOnlySpan<char> fileNamePtr, long length, in DokanFileInfo info) => NtStatus.NotImplemented;
 
-        public NtStatus SetAllocationSize(string fileName, long length, in DokanFileInfo info) => NtStatus.NotImplemented;
+        public NtStatus SetAllocationSize(ReadOnlySpan<char> fileNamePtr, long length, in DokanFileInfo info) => NtStatus.NotImplemented;
 
-        public NtStatus LockFile(string fileName, long offset, long length, in DokanFileInfo info) => NtStatus.NotImplemented;
+        public NtStatus LockFile(ReadOnlySpan<char> fileNamePtr, long offset, long length, in DokanFileInfo info) => NtStatus.NotImplemented;
 
-        public NtStatus UnlockFile(string fileName, long offset, long length, in DokanFileInfo info) => NtStatus.NotImplemented;
+        public NtStatus UnlockFile(ReadOnlySpan<char> fileNamePtr, long offset, long length, in DokanFileInfo info) => NtStatus.NotImplemented;
 
         public NtStatus GetDiskFreeSpace(out long freeBytesAvailable, out long totalNumberOfBytes, out long totalNumberOfFreeBytes, in DokanFileInfo info)
         {
@@ -380,19 +378,19 @@ namespace PowerShellFs
             return NtStatus.Success;
         }
 
-        public NtStatus GetFileSecurity(string fileName, out FileSystemSecurity security, AccessControlSections sections, in DokanFileInfo info)
+        public NtStatus GetFileSecurity(ReadOnlySpan<char> fileNamePtr, out FileSystemSecurity security, AccessControlSections sections, in DokanFileInfo info)
         {
             security = null;
             return NtStatus.NotImplemented;
         }
 
-        public NtStatus SetFileSecurity(string fileName, FileSystemSecurity security, AccessControlSections sections, in DokanFileInfo info) => NtStatus.NotImplemented;
+        public NtStatus SetFileSecurity(ReadOnlySpan<char> fileNamePtr, FileSystemSecurity security, AccessControlSections sections, in DokanFileInfo info) => NtStatus.NotImplemented;
 
-        public NtStatus Mounted(string drive, in DokanFileInfo info) => NtStatus.Success;
+        public NtStatus Mounted(ReadOnlySpan<char> drive, in DokanFileInfo info) => NtStatus.Success;
 
         public NtStatus Unmounted(in DokanFileInfo info) => NtStatus.Success;
 
-        public NtStatus FindStreams(string fileName, out IEnumerable<FindFileInformation> streams, in DokanFileInfo info)
+        public NtStatus FindStreams(ReadOnlySpan<char> fileNamePtr, out IEnumerable<FindFileInformation> streams, in DokanFileInfo info)
         {
             streams = null;
             return NtStatus.NotImplemented;
