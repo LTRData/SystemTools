@@ -11,204 +11,201 @@ using System.Linq;
 using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Security;
-using System.Security.Permissions;
 
-namespace SessionPowerSaver
+namespace SessionPowerSaver;
+
+public static class Program
 {
-    public static class Program
+    private static Process CurrentProcess { get; } = Process.GetCurrentProcess();
+
+    private static WindowsIdentity CurrentUser { get; } = WindowsIdentity.GetCurrent();
+
+    private static readonly StreamWriter log = new(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), $"Session_{CurrentProcess.SessionId}.log"), append: true)
     {
-        private static Process CurrentProcess { get; } = Process.GetCurrentProcess();
+        AutoFlush = true
+    };
 
-        private static WindowsIdentity CurrentUser { get; } = WindowsIdentity.GetCurrent();
+    private static void LogWrite(string message)
+    {
+        message = $"{DateTime.UtcNow:o} Thread {Environment.CurrentManagedThreadId:X5} {message}";
 
-        private static readonly StreamWriter log = new(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), $"Session_{CurrentProcess.SessionId}.log"), append: true)
+        ThreadPool.QueueUserWorkItem(message =>
         {
-            AutoFlush = true
-        };
+            Trace.WriteLine(message);
 
-        private static void LogWrite(string message)
-        {
-            message = $"{DateTime.UtcNow:o} Thread {Thread.CurrentThread.ManagedThreadId:X5} {message}";
-
-            ThreadPool.QueueUserWorkItem(message =>
+            lock (log)
             {
-                Trace.WriteLine(message);
+                log.WriteLine(message);
+            }
+        }, message);
+    }
 
-                lock (log)
+    static Program()
+    {
+        AppDomain.CurrentDomain.UnhandledException += (sender, e) => LogWrite(e.ExceptionObject.ToString());
+    }
+
+    public static int Main()
+    {
+        LogWrite("Starting up SessionPowerSaver");
+
+        var currentProcessTree = new List<int>();
+        try
+        {
+            currentProcessTree.Add(CurrentProcess.Id);
+            for (var ppid = CurrentProcess.QueryBasicInformation().ParentProcessId.ToInt32();
+                ppid != 0;)
+            {
+                currentProcessTree.Add(ppid);
+
+                using var p = Process.GetProcessById(ppid);
+                if (p.HasExited)
                 {
-                    log.WriteLine(message);
+                    break;
                 }
-            }, message);
+                ppid = p.QueryBasicInformation().ParentProcessId.ToInt32();
+            }
+        }
+        catch
+        {
         }
 
-        static Program()
+        var suspended = new ConcurrentDictionary<int, DateTime>();
+
+        var rc = 0;
+
+        try
         {
-            AppDomain.CurrentDomain.UnhandledException += (sender, e) => LogWrite(e.ExceptionObject.ToString());
+            ServiceLoop(currentProcessTree, suspended);
+        }
+        catch (Exception ex)
+        {
+            LogWrite(ex.ToString());
+            rc = ex.HResult;
         }
 
-        public static int Main()
+        Parallel.ForEach(suspended, item =>
         {
-            LogWrite("Starting up SessionPowerSaver");
-
-            var currentProcessTree = new List<int>();
             try
             {
-                currentProcessTree.Add(CurrentProcess.Id);
-                for (var ppid = CurrentProcess.QueryBasicInformation().ParentProcessId.ToInt32();
-                    ppid != 0;)
+                using var suspended_process = SafeOpenProcess(item.Key);
+
+                if (suspended_process is not null && item.Value == suspended_process.StartTime)
                 {
-                    currentProcessTree.Add(ppid);
-
-                    using var p = Process.GetProcessById(ppid);
-                    if (p.HasExited)
-                    {
-                        break;
-                    }
-                    ppid = p.QueryBasicInformation().ParentProcessId.ToInt32();
+                    LogWrite($"Resuming process {suspended_process.Id} ({suspended_process.ProcessName})");
+                    suspended_process.Resume();
                 }
-            }
-            catch
-            {
-            }
-
-            var suspended = new ConcurrentDictionary<int, DateTime>();
-
-            var rc = 0;
-
-            try
-            {
-                ServiceLoop(currentProcessTree, suspended);
             }
             catch (Exception ex)
             {
-                LogWrite(ex.ToString());
-                rc = ex.HResult;
+                LogWrite($"Failed to resume process {item.Key}: {ex}");
             }
+        });
 
-            Parallel.ForEach(suspended, item =>
-            {
-                try
-                {
-                    using var suspended_process = SafeOpenProcess(item.Key);
+        LogWrite($"Exiting SessionPowerSaver 0x{rc:X}");
 
-                    if (suspended_process is not null && item.Value == suspended_process.StartTime)
-                    {
-                        LogWrite($"Resuming process {suspended_process.Id} ({suspended_process.ProcessName})");
-                        suspended_process.Resume();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    LogWrite($"Failed to resume process {item.Key}: {ex}");
-                }
-            });
+        return rc;
+    }
 
-            LogWrite($"Exiting SessionPowerSaver 0x{rc:X}");
+    private static void ServiceLoop(IReadOnlyList<int> currentProcessTree, ConcurrentDictionary<int, DateTime> suspended)
+    {
+        using var sync = new ManualResetEvent(initialState: true);
 
-            return rc;
-        }
+        SystemEvents.SessionSwitch += (_, _) => sync.Set();
 
-        private static void ServiceLoop(IReadOnlyList<int> currentProcessTree, ConcurrentDictionary<int, DateTime> suspended)
+        for (; ; )
         {
-            using var sync = new ManualResetEvent(initialState: true);
+            var session_state = WTS.CurrentSessionInfo.SessionState;
 
-            SystemEvents.SessionSwitch += (_, _) => sync.Set();
+            sync.Reset();
 
-            for (; ; )
-            {
-                var session_state = WTS.CurrentSessionInfo.SessionState;
+            var is_connected = session_state <= ConnectState.Connected;
 
-                sync.Reset();
+            LogWrite($"Session is {session_state}");
 
-                var is_connected = session_state <= ConnectState.Connected;
-
-                LogWrite($"Session is {session_state}");
-
-                Parallel.ForEach(WTS.CurrentSessionProcesses
-                    .TakeWhile(p => !sync.WaitOne(0))
-                    .Where(p => p.UserSid == CurrentUser.User &&
-                        !currentProcessTree.Contains(p.ProcessId) &&
-                        p.TotalProcessorTime.TotalMinutes > 6d), p =>
+            Parallel.ForEach(WTS.CurrentSessionProcesses
+                .TakeWhile(p => !sync.WaitOne(0))
+                .Where(p => p.UserSid == CurrentUser.User &&
+                    !currentProcessTree.Contains(p.ProcessId) &&
+                    p.TotalProcessorTime.TotalMinutes > 6d), p =>
+                    {
+                        if (sync.WaitOne(0))
                         {
-                            if (sync.WaitOne(0))
+                            return;
+                        }
+
+                        if (suspended.TryGetValue(p.ProcessId, out var item))
+                        {
+                            using var suspended_process = SafeOpenProcess(p.ProcessId);
+
+                            if (suspended_process is null || item != suspended_process.StartTime)
+                            {
+                                LogWrite($"Previous process {p.ProcessId} with start time {item} no longer exists");
+                                suspended.TryRemove(p.ProcessId, out item);
+                            }
+                            else if (is_connected)
+                            {
+                                LogWrite($"Resuming process {p.ProcessId} ({p.ProcessName})");
+                                suspended_process.Resume();
+                                suspended.TryRemove(p.ProcessId, out item);
+                                return;
+                            }
+                            else
                             {
                                 return;
                             }
+                        }
 
-                            if (suspended.TryGetValue(p.ProcessId, out var item))
-                            {
-                                using var suspended_process = SafeOpenProcess(p.ProcessId);
+                        if (is_connected)
+                        {
+                            return;
+                        }
 
-                                if (suspended_process is null || item != suspended_process.StartTime)
-                                {
-                                    LogWrite($"Previous process {p.ProcessId} with start time {item} no longer exists");
-                                    suspended.TryRemove(p.ProcessId, out item);
-                                }
-                                else if (is_connected)
-                                {
-                                    LogWrite($"Resuming process {p.ProcessId} ({p.ProcessName})");
-                                    suspended_process.Resume();
-                                    suspended.TryRemove(p.ProcessId, out item);
-                                    return;
-                                }
-                                else
-                                {
-                                    return;
-                                }
-                            }
+                        using var process = SafeOpenProcess(p.ProcessId);
 
-                            if (is_connected)
-                            {
-                                return;
-                            }
+                        if (process is null ||
+                            process.MainWindowHandle == IntPtr.Zero ||
+                            !process.Responding)
+                        {
+                            return;
+                        }
 
-                            using var process = SafeOpenProcess(p.ProcessId);
+                        var process_time = DateTime.Now - process.StartTime;
 
-                            if (process is null ||
-                                process.MainWindowHandle == IntPtr.Zero ||
-                                !process.Responding)
-                            {
-                                return;
-                            }
+                        var cpu = p.TotalProcessorTime.TotalMilliseconds / process_time.TotalMilliseconds;
 
-                            var process_time = DateTime.Now - process.StartTime;
+                        if (cpu > 0.1)
+                        {
+                            LogWrite($"Process {p.ProcessId} ({p.ProcessName}, '{process.MainWindowTitle}') CPU usage is {100 * cpu:0.0}%. Suspending...");
 
-                            var cpu = p.TotalProcessorTime.TotalMilliseconds / process_time.TotalMilliseconds;
+                            process.Suspend();
+                            suspended[p.ProcessId] = process.StartTime;
+                        }
+                    });
 
-                            if (cpu > 0.1)
-                            {
-                                LogWrite($"Process {p.ProcessId} ({p.ProcessName}, '{process.MainWindowTitle}') CPU usage is {100 * cpu:0.0}%. Suspending...");
+            LogWrite("Waiting");
 
-                                process.Suspend();
-                                suspended[p.ProcessId] = process.StartTime;
-                            }
-                        });
-
-                LogWrite("Waiting");
-
-                if (sync.WaitOne(TimeSpan.FromMinutes(60)))
-                {
-                    LogWrite("Session change");
-                }
-                else
-                {
-                    LogWrite("Timeout");
-                }
+            if (sync.WaitOne(TimeSpan.FromMinutes(60)))
+            {
+                LogWrite("Session change");
+            }
+            else
+            {
+                LogWrite("Timeout");
             }
         }
+    }
 
-        private static Process SafeOpenProcess(int processId)
+    private static Process SafeOpenProcess(int processId)
+    {
+        try
         {
-            try
-            {
-                return Process.GetProcessById(processId);
-            }
-            catch (Exception ex)
-            {
-                LogWrite($"Failed to open process {processId}: {ex.JoinMessages(" -> ")}");
-                return null;
-            }
+            return Process.GetProcessById(processId);
+        }
+        catch (Exception ex)
+        {
+            LogWrite($"Failed to open process {processId}: {ex.JoinMessages(" -> ")}");
+            return null;
         }
     }
 }

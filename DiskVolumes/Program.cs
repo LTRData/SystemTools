@@ -1,24 +1,23 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace DiskVolumes
+namespace DiskVolumes;
+
+public static class Program
 {
-    public static class Program
+    public static int Main(params string[] args)
     {
-        public static int Main(params string[] args)
+        try
         {
-            try
-            {
-                return DiskVolumes.UnsafeMain(args);
-            }
-            catch (Exception ex)
-            {
-                Trace.WriteLine(ex.ToString());
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(ex.ToString());
-                Console.ResetColor();
-                return -1;
-            }
+            return DiskVolumes.UnsafeMain(args);
+        }
+        catch (Exception ex)
+        {
+            Trace.WriteLine(ex.ToString());
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(ex.ToString());
+            Console.ResetColor();
+            return -1;
         }
     }
 }
