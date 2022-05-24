@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net45;net6.0</TargetFrameworks>
+    <TargetFrameworks>net46;net6.0</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -54,7 +54,7 @@
     <Folder Include="Properties\" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net45'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'net46'">
     <Reference Include="System.Management" />
   </ItemGroup>
 

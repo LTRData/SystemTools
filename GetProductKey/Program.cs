@@ -331,7 +331,7 @@ GetProductKey D:\path\windows_setup.iso");
 
                 try
                 {
-                    if (fsrec.Length > 0)
+                    if (fsrec.Count > 0)
                     {
                         fs = fsrec[0].Open(raw);
                     }
@@ -361,7 +361,7 @@ GetProductKey D:\path\windows_setup.iso");
         {
             var raw = image.Content;
             var fsrec = FileSystemManager.DetectFileSystems(raw);
-            if (fsrec.Length > 0)
+            if (fsrec.Count > 0)
             {
                 var fs = fsrec[0].Open(raw);
 
