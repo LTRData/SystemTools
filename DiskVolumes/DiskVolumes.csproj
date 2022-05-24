@@ -3,12 +3,11 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net6.0-windows;net35;net40</TargetFrameworks>
+    <TargetFrameworks>net6.0;net35;net40</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LTRLib40" Version="1.0.0" />
-    <PackageReference Include="LTRLib.Windows" Version="1.0.0" />
+    <PackageReference Include="LTRLib40" Version="*" />
   </ItemGroup>
 
 </Project>

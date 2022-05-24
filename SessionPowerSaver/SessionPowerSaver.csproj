@@ -3,7 +3,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFrameworks>net48;net6.0-windows</TargetFrameworks>
+    <TargetFrameworks>net48;net6.0</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
@@ -13,9 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="LTRLib40" Version="1.0.0" />
-    <PackageReference Include="LTRLib40.Extended" Version="1.0.0" />
-    <PackageReference Include="LTRLib.Windows.Extended" Version="1.0.0" />
+    <PackageReference Include="LTRLib40" Version="*" />
+    <PackageReference Include="LTRLib40.Extended" Version="*" />
   </ItemGroup>
 
 </Project>

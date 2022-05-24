@@ -10,14 +10,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="LTRLib40" Version="1.0.0" />
-    <PackageReference Include="LTRData.DiscUtils.Core" Version="1.0.0" />
-    <PackageReference Include="LTRData.DiscUtils.Streams" Version="1.0.0" />
-    <PackageReference Include="LTRData.DiscUtils.Dmg" Version="1.0.0" />
-    <PackageReference Include="LTRData.DiscUtils.Vdi" Version="1.0.0" />
-    <PackageReference Include="LTRData.DiscUtils.Vhd" Version="1.0.0" />
-    <PackageReference Include="LTRData.DiscUtils.Vhdx" Version="1.0.0" />
-    <PackageReference Include="LTRData.DiscUtils.Vmdk" Version="1.0.0" />
+    <PackageReference Include="LTRLib40" Version="*" />
+    <PackageReference Include="LTRData.DiscUtils.Core" Version="*" />
+    <PackageReference Include="LTRData.DiscUtils.Streams" Version="*" />
+    <PackageReference Include="LTRData.DiscUtils.Dmg" Version="*" />
+    <PackageReference Include="LTRData.DiscUtils.Vdi" Version="*" />
+    <PackageReference Include="LTRData.DiscUtils.Vhd" Version="*" />
+    <PackageReference Include="LTRData.DiscUtils.Vhdx" Version="*" />
+    <PackageReference Include="LTRData.DiscUtils.Vmdk" Version="*" />
   </ItemGroup>
 
 </Project>
