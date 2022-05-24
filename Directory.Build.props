@@ -18,9 +18,4 @@
 	<RollForward>LatestMajor</RollForward>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <DiscUtilsPath>..\..\DiscUtils\Library\DiscUtils\bin\$(Configuration)\$(TargetFramework)</DiscUtilsPath>
-    <DokanNetPath>..\..\dokan-dotnet\$(Configuration)\$(TargetFramework)</DokanNetPath>
-  </PropertyGroup>
-  
 </Project>

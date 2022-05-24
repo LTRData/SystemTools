@@ -13,15 +13,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="LTRLib40">
-      <HintPath>..\..\LTRLib\$(Configuration)\$(TargetFramework)\LTRLib40.dll</HintPath>
-    </Reference>
-    <Reference Include="LTRLib40.Extended">
-      <HintPath>..\..\LTRLib\$(Configuration)\$(TargetFramework)\LTRLib40.Extended.dll</HintPath>
-    </Reference>
-    <Reference Include="LTRLib.Windows.Extended">
-      <HintPath>..\..\LTRLib\$(Configuration)\$(TargetFramework)\LTRLib.Windows.Extended.dll</HintPath>
-    </Reference>
+    <PackageReference Include="LTRLib40" Version="1.0.0" />
+    <PackageReference Include="LTRLib40.Extended" Version="1.0.0" />
+    <PackageReference Include="LTRLib.Windows.Extended" Version="1.0.0" />
   </ItemGroup>
 
 </Project>

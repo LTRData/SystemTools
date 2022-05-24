@@ -10,15 +10,8 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.PowerShell.5.ReferenceAssemblies" Version="1.1.0" />
     <PackageReference Include="System.Memory" Version="4.5.4" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="DokanNet">
-      <HintPath>$(DokanNetPath)\DokanNet.dll</HintPath>
-    </Reference>
-    <Reference Include="DiscUtils.Core">
-      <HintPath>$(DiscUtilsPath)\DiscUtils.Core.dll</HintPath>
-    </Reference>
+    <PackageReference Include="LTRData.DokanNet" Version="*" />
+    <PackageReference Include="LTRData.DiscUtils.Core" Version="*" />
   </ItemGroup>
 
 </Project>

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net45;net6.0</TargetFrameworks>
+    <TargetFrameworks>net46;net6.0</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -10,30 +10,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="LTRLib40">
-      <HintPath>..\..\LTRLib\$(Configuration)\$(TargetFramework)\LTRLib40.dll</HintPath>
-    </Reference>
-    <Reference Include="DiscUtils.Core">
-      <HintPath>$(DiscUtilsPath)\DiscUtils.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="DiscUtils.Streams">
-      <HintPath>$(DiscUtilsPath)\DiscUtils.Streams.dll</HintPath>
-    </Reference>
-    <Reference Include="DiscUtils.Dmg">
-      <HintPath>$(DiscUtilsPath)\DiscUtils.Dmg.dll</HintPath>
-    </Reference>
-    <Reference Include="DiscUtils.Vdi">
-      <HintPath>$(DiscUtilsPath)\DiscUtils.Vdi.dll</HintPath>
-    </Reference>
-    <Reference Include="DiscUtils.Vhd">
-      <HintPath>$(DiscUtilsPath)\DiscUtils.Vhd.dll</HintPath>
-    </Reference>
-    <Reference Include="DiscUtils.Vhdx">
-      <HintPath>$(DiscUtilsPath)\DiscUtils.Vhdx.dll</HintPath>
-    </Reference>
-    <Reference Include="DiscUtils.Vmdk">
-      <HintPath>$(DiscUtilsPath)\DiscUtils.Vmdk.dll</HintPath>
-    </Reference>
+    <PackageReference Include="LTRLib40" Version="1.0.0" />
+    <PackageReference Include="LTRData.DiscUtils.Core" Version="1.0.0" />
+    <PackageReference Include="LTRData.DiscUtils.Streams" Version="1.0.0" />
+    <PackageReference Include="LTRData.DiscUtils.Dmg" Version="1.0.0" />
+    <PackageReference Include="LTRData.DiscUtils.Vdi" Version="1.0.0" />
+    <PackageReference Include="LTRData.DiscUtils.Vhd" Version="1.0.0" />
+    <PackageReference Include="LTRData.DiscUtils.Vhdx" Version="1.0.0" />
+    <PackageReference Include="LTRData.DiscUtils.Vmdk" Version="1.0.0" />
   </ItemGroup>
 
 </Project>
