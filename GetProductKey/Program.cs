@@ -56,6 +56,7 @@ public static class Program
         try
         {
             UnsafeMain(args);
+
             return 0;
         }
         catch (Exception ex)
@@ -64,11 +65,7 @@ public static class Program
             Console.Error.WriteLine(ex.FormatMessage());
             Console.ResetColor();
 
-#if NETFRAMEWORK && !NET45_OR_GREATER
-            return Marshal.GetHRForException(ex);
-#else
             return ex.HResult;
-#endif
         }
     }
 
@@ -89,12 +86,15 @@ GetProductKey \\machinename
 
 Syntax for an offline Windows installation on an attached external harddisk
 GetProductKey D:\
+GetProductKey /mnt/external
 
 Syntax for a virtual machine image (supports vhd, vhdx, vmdk and vdi):
 GetProductKey D:\path\image.vhd
+GetProductKey /path/image.vhd
 
 Syntax for a setup ISO or WIM image:
-GetProductKey D:\path\windows_setup.iso");
+GetProductKey D:\path\windows_setup.iso
+GetProductKey /path/windows_setup.iso");
 
             return;
         }
@@ -112,9 +112,9 @@ GetProductKey D:\path\windows_setup.iso");
             online_root_keys.Add(key);
             value_getters.Add(new($@"\\{Environment.MachineName}", key.GetValue));
 
-            hardware_product_key = Task.Factory.StartNew(() => SoftwareLicensingService.GetInstances()
-                                               .OfType<SoftwareLicensingService>()
-                                               .FirstOrDefault()?.OA3xOriginalProductKey);
+            hardware_product_key = Task.Run(() => SoftwareLicensingService.GetInstances()
+                                                .OfType<SoftwareLicensingService>()
+                                                .FirstOrDefault()?.OA3xOriginalProductKey);
         }
         else
         {
@@ -162,7 +162,7 @@ GetProductKey D:\path\windows_setup.iso");
 
                             if (!wiminfo.Exists)
                             {
-                                throw new FileNotFoundException(@"Cannot find sources\install.wim in image");
+                                throw new FileNotFoundException(@$"Cannot find sources{Path.DirectorySeparatorChar}install.wim in image");
                             }
                         }
 
@@ -173,7 +173,7 @@ GetProductKey D:\path\windows_setup.iso");
                             var hive = new DiscUtilsRegistryHive(fs.Value, FileAccess.Read);
                             var key = hive.Root.OpenSubKey(@"Microsoft\Windows NT\CurrentVersion");
                             offline_root_keys.Add(key);
-                            value_getters.Add(new(@$"{arg}\{wiminfo.FullName} index {fs.Key}", name => { lock (file) { return key.GetValue(name); } }));
+                            value_getters.Add(new(@$"{arg}{Path.DirectorySeparatorChar}{wiminfo.FullName} index {fs.Key}", name => { lock (file) { return key.GetValue(name); } }));
                         }
                     }
                     else if (File.Exists(arg) && Path.GetExtension(arg).Equals(".wim", StringComparison.OrdinalIgnoreCase))
@@ -366,6 +366,10 @@ GetProductKey D:\path\windows_setup.iso");
                 var fs = fsrec[0].Open(raw);
 
                 var hive = fs.GetFileInfo(@"Windows\system32\config\SOFTWARE");
+                if (hive is null || !hive.Exists)
+                {
+                    hive = fs.GetFileInfo(@"WINNT\system32\config\SOFTWARE");
+                }
 
                 if (hive is not null && hive.Exists)
                 {
@@ -375,14 +379,14 @@ GetProductKey D:\path\windows_setup.iso");
         }
     }
 
-    public static string DecodeProductKey(byte[] data)
+    public static string DecodeProductKey(ReadOnlySpan<byte> data)
     {
-        if (data is null || data.Length < 67)
+        if (data.Length < 67)
         {
             return null;
         }
 
-        var valueData = data.Skip(52).Take(15).ToArray();
+        var valueData = data.Slice(52, 15).ToArray();
         var productKey = new char[29];
         var o = productKey.Length;
         const string chars = "BCDFGHJKMPQRTVWXY2346789";
