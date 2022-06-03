@@ -381,39 +381,54 @@ GetProductKey /path/windows_setup.iso");
 
     public static string DecodeProductKey(ReadOnlySpan<byte> data)
     {
-        if (data.Length < 67)
+        Span<char> productKey = stackalloc char[29];
+
+        if (DecodeProductKey(data, productKey))
         {
-            return null;
+            return productKey.ToString();
         }
 
-        var valueData = data.Slice(52, 15).ToArray();
-        var productKey = new char[29];
+        return null;
+    }
+
+    public static bool DecodeProductKey(ReadOnlySpan<byte> data, Span<char> destination)
+    {
+        if (data.Length < 67)
+        {
+            return false;
+        }
+
+        Span<byte> valueDataBuffer = stackalloc byte[15];
+        data.Slice(52, 15).CopyTo(valueDataBuffer);
+
+        var productKey = destination.Slice(0, 29);
+
         var o = productKey.Length;
+
         const string chars = "BCDFGHJKMPQRTVWXY2346789";
+
         for (var i = 24; i >= 0; i--)
         {
             var r = 0;
             for (var j = 14; j >= 0; j--)
             {
-                r = (r << 8) | valueData[j];
-                valueData[j] = (byte)(r / 24);
+                r = (r << 8) | valueDataBuffer[j];
+                valueDataBuffer[j] = (byte)(r / 24);
                 r %= 24;
             }
             productKey[--o] = chars[r];
-            
+
             if ((i % 5) == 0 && i != 0)
             {
                 productKey[--o] = '-';
             }
         }
 
-        var key = new string(productKey);
-
-        if (key.Equals("BBBBB-BBBBB-BBBBB-BBBBB-BBBBB", StringComparison.Ordinal))
+        if (MemoryExtensions.Equals(productKey, "BBBBB-BBBBB-BBBBB-BBBBB-BBBBB".AsSpan(), StringComparison.Ordinal))
         {
-            return null;
+            return false;
         }
 
-        return key;
+        return true;
     }
 }
