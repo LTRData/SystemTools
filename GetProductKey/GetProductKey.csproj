@@ -20,6 +20,7 @@
     <PackageReference Include="LTRData.DiscUtils.Vmdk" Version="*" />
     <PackageReference Include="LTRData.DiscUtils.Wim" Version="*" />
     <PackageReference Include="LTRData.DiscUtils.Xva" Version="*" />
+    <PackageReference Include="Microsoft.Management.Infrastructure" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,12 +28,10 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net46'">
-    <Reference Include="System.Management" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.*" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
-    <PackageReference Include="System.Management" Version="*" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="*" />
   </ItemGroup>
 

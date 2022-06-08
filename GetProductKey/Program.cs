@@ -14,9 +14,12 @@ using DiscUtilsRegistryHive = DiscUtils.Registry.RegistryHive;
 using DiscUtilsRegistryKey = DiscUtils.Registry.RegistryKey;
 using System.Runtime.InteropServices;
 using Microsoft.Win32;
-using ROOT.CIMV2;
+using Microsoft.Management.Infrastructure;
+using System.Reflection;
 
-namespace GetProductKey;
+#pragma warning disable IDE0057 // Use range operator
+
+namespace LTR.GetProductKey;
 
 public static class Program
 {
@@ -39,7 +42,22 @@ public static class Program
         };
         foreach (var asm in asms.Distinct())
         {
-            DiscUtils.Setup.SetupHelper.RegisterAssembly(asm);
+            try
+            {
+                DiscUtils.Setup.SetupHelper.RegisterAssembly(asm);
+            }
+            catch (TypeInitializationException ex) when (ex.GetBaseException() is ReflectionTypeLoadException rtle)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Error.WriteLine($"Failed to load {asm}: {rtle.LoaderExceptions.First().GetBaseException().Message}");
+                Console.ResetColor();
+            }
+            catch (Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Error.WriteLine($"Failed to load {asm}: {ex.GetType().Name}: {ex.GetBaseException().Message}");
+                Console.ResetColor();
+            }
         }
     }
 
@@ -112,9 +130,13 @@ GetProductKey /path/windows_setup.iso");
             online_root_keys.Add(key);
             value_getters.Add(new($@"\\{Environment.MachineName}", key.GetValue));
 
-            hardware_product_key = Task.Run(() => SoftwareLicensingService.GetInstances()
-                                                .OfType<SoftwareLicensingService>()
-                                                .FirstOrDefault()?.OA3xOriginalProductKey);
+            hardware_product_key = Task.Run(() =>
+            {
+                using var cimSession = CimSession.Create(null);
+                using var cim = cimSession?.EnumerateInstances(@"root\cimv2", "SoftwareLicensingService").FirstOrDefault();
+                
+                return cim?.CimInstanceProperties["OA3xOriginalProductKey"].Value as string;
+            });
         }
         else
         {
@@ -246,7 +268,14 @@ GetProductKey /path/windows_setup.iso");
 
                 if (hardware_product_key is not null)
                 {
-                    sb.AppendLine($"Hardware product key:    {hardware_product_key.Result}");
+                    try
+                    {
+                        sb.AppendLine($"Hardware product key:    {hardware_product_key.Result}");
+                    }
+                    catch (Exception ex)
+                    {
+                        sb.AppendLine($"Failed to get hardware product key: {ex.GetBaseException().Message}");
+                    }
                 }
 
                 var msg = sb.ToString();

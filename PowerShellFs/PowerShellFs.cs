@@ -290,21 +290,21 @@ public class PowerShellFs : IDokanOperations
             {
                 var drives = ps.AddCommand("Get-PSDrive").Invoke().Select(drive => drive.Properties["Name"].Value as string);
 
-                if (fileNamePtr.IndexOfAny(new[] { '?', '*' }) >= 0)
+                if (fileNamePtr.IndexOfAny('?', '*') >= 0)
                 {
-                    Func<string, bool> regx = Utilities.ConvertWildcardsToRegEx(fileNamePtr.TrimStart('\\').ToString()).IsMatch;
+                    var regx = Utilities.ConvertWildcardsToRegEx(fileNamePtr.TrimStart('\\').ToString(), ignoreCase: true);
                     drives = drives.Where(regx);
                 }
-                if (!"*".Equals(searchPattern, StringComparison.Ordinal))
+                if (searchPattern != "*")
                 {
-                    Func<string, bool> regx = Utilities.ConvertWildcardsToRegEx(searchPattern).IsMatch;
+                    var regx = Utilities.ConvertWildcardsToRegEx(searchPattern, ignoreCase: true);
                     drives = drives.Where(regx);
                 }
 
                 files = drives.Select(drive => new FindFileInformation
                 {
                     Attributes = FileAttributes.Directory,
-                    FileName = drive
+                    FileName = drive.AsMemory()
                 });
 
                 return NtStatus.Success;
@@ -322,7 +322,7 @@ public class PowerShellFs : IDokanOperations
                     LastAccessTime = finfo["LastAccessTime"]?.Value as DateTime? ?? finfo["NotBefore"]?.Value as DateTime?,
                     LastWriteTime = finfo["LastWriteTime"]?.Value as DateTime? ?? finfo["NotBefore"]?.Value as DateTime?,
                     Length = finfo["Length"]?.Value as long? ?? (finfo["RawData"]?.Value as byte[])?.Length ?? (finfo["Value"]?.Value as string)?.Length ?? 0,
-                    FileName = finfo["PSChildName"]?.Value as string ?? finfo["Name"]?.Value as string
+                    FileName = (finfo["PSChildName"]?.Value as string ?? finfo["Name"]?.Value as string).AsMemory()
                 });
 
             return NtStatus.Success;
