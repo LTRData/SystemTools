@@ -6,7 +6,7 @@ Imports Microsoft.Win32
 
 #Disable Warning IDE1006 ' Naming Styles
 
-Public Class Dataviewer
+Partial Public Class Dataviewer
 
     Private Declare Function SQLManageDataSources Lib "ODBCCP32.dll" (hwnd As IntPtr) As Boolean
 

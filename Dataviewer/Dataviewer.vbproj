@@ -1,21 +1,47 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<OutputType>WinExe</OutputType>
-		<TargetFrameworks>net6.0-windows;net20;net40</TargetFrameworks>
-		<UseWindowsForms>true</UseWindowsForms>
-	</PropertyGroup>
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFrameworks>net6.0-windows;net20;net40</TargetFrameworks>
+    <RootNamespace>LTR.DataViewer</RootNamespace>
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
 
-	<ItemGroup Condition="'$(TargetFramework.CompareTo(`net5`))' &lt; 0">
-		<Reference Include="System.Data" />
-		<Reference Include="System.Windows.Forms" />
-	</ItemGroup>
+  <PropertyGroup>
+    <Title>ODBC Dataviewer</Title>
+    <Description>Utility to make ODBC connections, send SQL queries and update data.</Description>
+    <Company>LTR Data</Company>
+    <Product>ODBC Dataviewer</Product>
+    <Copyright>Copyright © Olof Lagerkvist, LTR Data 2007-2022</Copyright>
+    <Version>1.1.0.0</Version>
+    <FileVersion>1.1.0.0</FileVersion>
+  </PropertyGroup>
 
-	<ItemGroup Condition="'$(TargetFramework.CompareTo(`net5`))' &gt;= 0">
-	  <PackageReference Include="System.Data.Odbc">
-	    <Version>6.0.0</Version>
-	  </PackageReference>
-	</ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework.CompareTo(`net5`))' &lt; 0">
+    <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework.CompareTo(`net5`))' &gt;= 0">
+    <PackageReference Include="System.Data.Odbc">
+      <Version>6.0.0</Version>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="My Project\Settings.Designer.vb">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+  </ItemGroup>
 
 </Project>

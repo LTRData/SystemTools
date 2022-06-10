@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31613.86
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32526.322
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SessionPowerSaver", "SessionPowerSaver\SessionPowerSaver.csproj", "{1681916F-85D9-4C18-BF87-6EC9E9BA2C6E}"
 EndProject
@@ -25,6 +25,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GetProductKey", "GetProductKey\GetProductKey.csproj", "{6BE6F995-CC04-45EA-B97F-4810FE643922}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageMBR2GPT", "ImageMBR2GPT\ImageMBR2GPT.csproj", "{302D061E-631F-439F-B849-5D4707305FED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LTR.Compat.System.Management", "LTR.Compat.System.Management\LTR.Compat.System.Management.csproj", "{67E52F04-F61E-4708-A04F-FA1D69A8C524}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -144,6 +146,18 @@ Global
 		{302D061E-631F-439F-B849-5D4707305FED}.Release|x64.Build.0 = Release|Any CPU
 		{302D061E-631F-439F-B849-5D4707305FED}.Release|x86.ActiveCfg = Release|Any CPU
 		{302D061E-631F-439F-B849-5D4707305FED}.Release|x86.Build.0 = Release|Any CPU
+		{67E52F04-F61E-4708-A04F-FA1D69A8C524}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67E52F04-F61E-4708-A04F-FA1D69A8C524}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67E52F04-F61E-4708-A04F-FA1D69A8C524}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{67E52F04-F61E-4708-A04F-FA1D69A8C524}.Debug|x64.Build.0 = Debug|Any CPU
+		{67E52F04-F61E-4708-A04F-FA1D69A8C524}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{67E52F04-F61E-4708-A04F-FA1D69A8C524}.Debug|x86.Build.0 = Debug|Any CPU
+		{67E52F04-F61E-4708-A04F-FA1D69A8C524}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67E52F04-F61E-4708-A04F-FA1D69A8C524}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67E52F04-F61E-4708-A04F-FA1D69A8C524}.Release|x64.ActiveCfg = Release|Any CPU
+		{67E52F04-F61E-4708-A04F-FA1D69A8C524}.Release|x64.Build.0 = Release|Any CPU
+		{67E52F04-F61E-4708-A04F-FA1D69A8C524}.Release|x86.ActiveCfg = Release|Any CPU
+		{67E52F04-F61E-4708-A04F-FA1D69A8C524}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

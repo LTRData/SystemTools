@@ -5,6 +5,9 @@
     <OutputType>Exe</OutputType>
     <TargetFrameworks>net48</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Title>PowerShellFs - Virtual file system for PowerShell drives</Title>
+    <Product>PowerShellFs</Product>
+    <Copyright>Copyright © LTR Data, Olof Lagerkvist 2020-2022</Copyright>
   </PropertyGroup>
 
   <ItemGroup>

@@ -227,7 +227,7 @@ public class PowerShellFs : IDokanOperations
 
         if (finfo is null)
         {
-            fileInfo = null;
+            fileInfo = default;
             return NtStatus.ObjectNameNotFound;
         }
 

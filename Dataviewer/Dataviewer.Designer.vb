@@ -1,9 +1,9 @@
-<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class Dataviewer
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(disposing As Boolean)
         Try
             If disposing AndAlso components IsNot Nothing Then
@@ -20,7 +20,7 @@ Partial Class Dataviewer
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Dataviewer))
         Me.Panel1 = New System.Windows.Forms.Panel()
@@ -78,12 +78,12 @@ Partial Class Dataviewer
         '
         Me.tbTable.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.tbTable.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.Dataviewer.My.MySettings.Default, "Table", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
+        Me.tbTable.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.LTR.DataViewer.My_Project.MySettings.Default, "Table", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
         Me.tbTable.Location = New System.Drawing.Point(74, 30)
         Me.tbTable.Name = "tbTable"
         Me.tbTable.Size = New System.Drawing.Size(290, 20)
         Me.tbTable.TabIndex = 1
-        Me.tbTable.Text = Global.Dataviewer.My.MySettings.Default.Table
+        Me.tbTable.Text = Global.LTR.DataViewer.My_Project.MySettings.Default.Table
         '
         'Label2
         '
@@ -98,12 +98,12 @@ Partial Class Dataviewer
         '
         Me.tbDatasource.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.tbDatasource.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.Dataviewer.My.MySettings.Default, "Datasource", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
+        Me.tbDatasource.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.LTR.DataViewer.My_Project.MySettings.Default, "Datasource", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
         Me.tbDatasource.Location = New System.Drawing.Point(74, 4)
         Me.tbDatasource.Name = "tbDatasource"
         Me.tbDatasource.Size = New System.Drawing.Size(290, 20)
         Me.tbDatasource.TabIndex = 0
-        Me.tbDatasource.Text = Global.Dataviewer.My.MySettings.Default.Datasource
+        Me.tbDatasource.Text = Global.LTR.DataViewer.My_Project.MySettings.Default.Datasource
         '
         'Label1
         '
@@ -148,13 +148,13 @@ Partial Class Dataviewer
         Me.AcceptButton = Me.btnLoad
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = Global.Dataviewer.My.MySettings.Default.Size
+        Me.ClientSize = Global.LTR.DataViewer.My_Project.MySettings.Default.Size
         Me.Controls.Add(Me.DataGridView)
         Me.Controls.Add(Me.Panel1)
-        Me.DataBindings.Add(New System.Windows.Forms.Binding("Location", Global.Dataviewer.My.MySettings.Default, "WindowLocation", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.DataBindings.Add(New System.Windows.Forms.Binding("ClientSize", Global.Dataviewer.My.MySettings.Default, "Size", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
+        Me.DataBindings.Add(New System.Windows.Forms.Binding("Location", Global.LTR.DataViewer.My_Project.MySettings.Default, "WindowLocation", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
+        Me.DataBindings.Add(New System.Windows.Forms.Binding("ClientSize", Global.LTR.DataViewer.My_Project.MySettings.Default, "Size", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
-        Me.Location = Global.Dataviewer.My.MySettings.Default.WindowLocation
+        Me.Location = Global.LTR.DataViewer.My_Project.MySettings.Default.WindowLocation
         Me.Name = "Dataviewer"
         Me.Text = "ODBC Dataviewer"
         Me.Panel1.ResumeLayout(False)

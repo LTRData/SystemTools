@@ -8,17 +8,10 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("ODBC Dataviewer")> 
-<Assembly: AssemblyDescription("Utility to make ODBC connections, send SQL queries and update data.")> 
-<Assembly: AssemblyCompany("LTR Data")> 
-<Assembly: AssemblyProduct("ODBC Dataviewer")>
-<Assembly: AssemblyCopyright("Copyright © Olof Lagerkvist, LTR Data 2007-2022")>
-<Assembly: AssemblyTrademark("")> 
-
 <Assembly: ComVisible(False)>
 
 'The following GUID is for the ID of the typelib if this project is exposed to COM
-<Assembly: Guid("2d3527f8-fb68-4852-a629-c23613a1a787")> 
+<Assembly: Guid("2d3527f8-fb68-4852-a629-c23613a1a787")>
 
 ' Version information for an assembly consists of the following four values:
 '
@@ -30,6 +23,3 @@ Imports System.Runtime.InteropServices
 ' You can specify all the values or you can default the Build and Revision Numbers 
 ' by using the '*' as shown below:
 ' <Assembly: AssemblyVersion("1.0.*")> 
-
-<Assembly: AssemblyVersion("1.1.0.0")> 
-<Assembly: AssemblyFileVersion("1.1.0.0")> 
