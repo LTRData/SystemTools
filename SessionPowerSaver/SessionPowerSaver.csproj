@@ -3,7 +3,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFrameworks>net48;net6.0</TargetFrameworks>
+    <TargetFrameworks>net48;net6.0-windows</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Title>SessionPowerSaver</Title>
     <Product>SessionPowerSaver</Product>
@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <PackageReference Include="LTRLib40" Version="*" />
+    <PackageReference Include="LTRLib.Windows" Version="*" />
   </ItemGroup>
 
   <ItemGroup>
