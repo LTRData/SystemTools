@@ -4,10 +4,8 @@ using System.IO;
 using System.Linq;
 using LTRLib.Extensions;
 using DiscUtils.Partitions;
-using System.Collections.Generic;
-using LTRLib.IO;
-using DiscUtils.Streams;
 using DiscUtils.Raw;
+using LTRLib.LTRGeneric;
 
 namespace ImageMBR2GPT;
 
@@ -77,7 +75,7 @@ public static class Program
 
             foreach (var (i, p) in extents)
             {
-                Console.WriteLine($"Partition {i}, {p.TypeAsString}, offset sector {p.FirstSector}, number of sectors {p.SectorCount} ({IOSupport.FormatBytes(p.SectorCount * disk.Geometry.BytesPerSector)})");
+                Console.WriteLine($"Partition {i}, {p.TypeAsString}, offset sector {p.FirstSector}, number of sectors {p.SectorCount} ({StringSupport.FormatBytes(p.SectorCount * disk.Geometry.BytesPerSector)})");
             }
 
             Console.WriteLine("Do you want to replace the current partition table with a new GPT partition table? (y/N)");

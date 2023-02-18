@@ -12,7 +12,6 @@ using System.Text;
 using System.Threading.Tasks;
 using DiscUtilsRegistryHive = DiscUtils.Registry.RegistryHive;
 using DiscUtilsRegistryKey = DiscUtils.Registry.RegistryKey;
-using System.Runtime.InteropServices;
 using Microsoft.Win32;
 using Microsoft.Management.Infrastructure;
 using System.Reflection;
