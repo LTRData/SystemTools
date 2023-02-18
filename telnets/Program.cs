@@ -89,10 +89,12 @@ public static class Program
             dispobjs.Add(local_listener);
 
             local_listener.Bind(new IPEndPoint(IPAddress.Loopback, 0));
-            var local_port = (local_listener.LocalEndPoint as IPEndPoint).Port;
+            var local_port = (local_listener.LocalEndPoint as IPEndPoint)?.Port;
             local_listener.Listen(1);
 
-            var telnet_arguments = options.Concat(new[] { IPAddress.Loopback.ToString(), local_port.ToString() }).Join(" ");
+            var telnet_arguments = options
+                .Concat(new[] { IPAddress.Loopback.ToString(), local_port.ToString() })
+                .Join(' ');
 
             Console.WriteLine($"Starting '{telnet_exe}' with arguments '{telnet_arguments}'");
 
@@ -105,8 +107,12 @@ public static class Program
 
             var telnet_ps = Process.Start(telnet_start_info);
 
-            dispobjs.Add(telnet_ps);
+            if (telnet_ps is null)
+            {
+                return -1;
+            }
 
+            dispobjs.Add(telnet_ps);
             var local_socket = local_listener.Accept();
             local_listener.Close();
             local_socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.NoDelay, true);

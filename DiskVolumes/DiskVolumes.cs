@@ -55,7 +55,7 @@ public static class DiskVolumes
     {
         try
         {
-            var target = NativeFileIO.QueryDosDevice(vol.Substring(4, 44)).FirstOrDefault();
+            var target = NativeFileIO.QueryDosDevice(vol.Substring(4, 44))?.FirstOrDefault();
 
             Console.WriteLine($"Target: {target}");
 

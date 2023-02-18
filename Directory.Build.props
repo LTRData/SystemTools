@@ -9,6 +9,7 @@
     <OptionStrict>On</OptionStrict>
     <DelaySign>false</DelaySign>
 	<RollForward>LatestMajor</RollForward>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
 </Project>

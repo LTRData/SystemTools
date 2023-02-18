@@ -16,6 +16,7 @@ using Microsoft.Win32;
 using Microsoft.Management.Infrastructure;
 using System.Reflection;
 
+#pragma warning disable CA1416 // Validate platform compatibility
 #pragma warning disable IDE0057 // Use range operator
 
 namespace LTR.GetProductKey;
@@ -48,7 +49,7 @@ public static class Program
             catch (TypeInitializationException ex) when (ex.GetBaseException() is ReflectionTypeLoadException rtle)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.Error.WriteLine($"Failed to load {asm}: {rtle.LoaderExceptions.First().GetBaseException().Message}");
+                Console.Error.WriteLine($"Failed to load {asm}: {rtle.LoaderExceptions.First()?.GetBaseException().Message}");
                 Console.ResetColor();
             }
             catch (Exception ex)
@@ -117,17 +118,21 @@ GetProductKey /path/windows_setup.iso");
         }
 
         var online_root_keys = new ConcurrentBag<RegistryKey>();
-        Task<string> hardware_product_key = null;
+        Task<string?>? hardware_product_key = null;
         var offline_root_keys = new ConcurrentBag<DiscUtilsRegistryKey>();
-        var value_getters = new ConcurrentBag<KeyValuePair<string, Func<string, object>>>();
+        var value_getters = new ConcurrentBag<KeyValuePair<string, Func<string, object?>>>();
         var disposables = new ConcurrentBag<IDisposable>();
 
         if (args is null || args.Length == 0)
         {
             var key = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64).OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
-            disposables.Add(key);
-            online_root_keys.Add(key);
-            value_getters.Add(new($@"\\{Environment.MachineName}", key.GetValue));
+
+            if (key is not null)
+            {
+                disposables.Add(key);
+                online_root_keys.Add(key);
+                value_getters.Add(new($@"\\{Environment.MachineName}", key.GetValue));
+            }
 
             hardware_product_key = Task.Run(() =>
             {
@@ -147,10 +152,15 @@ GetProductKey /path/windows_setup.iso");
                         arg.IndexOf('\\', 2) < 0)
                     {
                         using var remotehive = RegistryKey.OpenRemoteBaseKey(RegistryHive.LocalMachine, arg, RegistryView.Registry64);
+
                         var key = remotehive?.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
-                        disposables.Add(key);
-                        online_root_keys.Add(key);
-                        value_getters.Add(new(arg, key.GetValue));
+                        
+                        if (key is not null)
+                        {
+                            disposables.Add(key);
+                            online_root_keys.Add(key);
+                            value_getters.Add(new(arg, key.GetValue));
+                        }
                     }
                     else if (Directory.Exists(arg))
                     {
@@ -214,12 +224,8 @@ GetProductKey /path/windows_setup.iso");
                     }
                     else if (File.Exists(arg))
                     {
-                        var image = VirtualDisk.OpenDisk(arg, FileAccess.Read);
-
-                        if (image is null)
-                        {
-                            image = new DiscUtils.Raw.Disk(arg, FileAccess.Read);
-                        }
+                        var image = VirtualDisk.OpenDisk(arg, FileAccess.Read)
+                            ?? new DiscUtils.Raw.Disk(arg, FileAccess.Read);
 
                         disposables.Add(image);
 
@@ -298,7 +304,7 @@ GetProductKey /path/windows_setup.iso");
         Parallel.ForEach(disposables.OfType<IDisposable>(), obj => obj.Dispose());
     }
 
-    private static string GetVersion(Func<string, object> value)
+    private static string GetVersion(Func<string, object?> value)
     {
         var currentMajor = value("CurrentMajorVersionNumber");
         if (currentMajor is not null)
@@ -311,7 +317,7 @@ GetProductKey /path/windows_setup.iso");
         }
     }
 
-    private static DateTime? GetInstallTime(Func<string, object> value)
+    private static DateTime? GetInstallTime(Func<string, object?> value)
     {
         if (value("InstallTime") is long time &&
 	       time != 0)
@@ -407,7 +413,7 @@ GetProductKey /path/windows_setup.iso");
         }
     }
 
-    public static string DecodeProductKey(ReadOnlySpan<byte> data)
+    public static string? DecodeProductKey(ReadOnlySpan<byte> data)
     {
         Span<char> productKey = stackalloc char[29];
 

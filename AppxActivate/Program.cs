@@ -16,7 +16,7 @@ interface IApplicationActivationManager
 public class ApplicationActivationManager : IApplicationActivationManager
 {
     [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)/*, PreserveSig*/]
-    public extern IntPtr ActivateApplication(string appUserModelId, string arguments, uint options, out uint processId);
+    public extern IntPtr ActivateApplication(string appUserModelId, string? arguments, uint options, out uint processId);
 
 }
 
@@ -43,7 +43,7 @@ public static class Program
         {
             var appman = new ApplicationActivationManager();
 
-            string app_args = null;
+            string? app_args = null;
 
             if (args.Length > 2)
             {

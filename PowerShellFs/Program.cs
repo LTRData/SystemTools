@@ -38,7 +38,7 @@ public static class Program
     {
         Dokan.Init();
 
-        RunspaceConnectionInfo ci = null;
+        RunspaceConnectionInfo? ci = null;
 
         if (args?.FirstOrDefault() is string host)
         {

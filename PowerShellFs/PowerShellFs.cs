@@ -31,7 +31,7 @@ public class PowerShellFs : IDokanOperations
 
     private sealed class FileObject
     {
-        public byte[] FileData;
+        public byte[]? FileData;
     }
 
     public NtStatus CreateFile(ReadOnlySpan<char> fileNamePtr, NativeFileAccess access, FileShare share, FileMode mode, FileOptions options, FileAttributes attributes, ref DokanFileInfo info)
@@ -191,7 +191,7 @@ public class PowerShellFs : IDokanOperations
             return NtStatus.Success;
         }
 
-        PSMemberInfoCollection<PSPropertyInfo> finfo;
+        PSMemberInfoCollection<PSPropertyInfo>? finfo;
 
         lock (Runspace)
         {
@@ -363,7 +363,7 @@ public class PowerShellFs : IDokanOperations
 
     public NtStatus GetFileSecurity(ReadOnlySpan<char> fileNamePtr, out FileSystemSecurity security, AccessControlSections sections, in DokanFileInfo info)
     {
-        security = null;
+        security = null!;
         return NtStatus.NotImplemented;
     }
 
@@ -375,7 +375,7 @@ public class PowerShellFs : IDokanOperations
 
     public NtStatus FindStreams(ReadOnlySpan<char> fileNamePtr, out IEnumerable<FindFileInformation> streams, in DokanFileInfo info)
     {
-        streams = null;
+        streams = null!;
         return NtStatus.NotImplemented;
     }
 }

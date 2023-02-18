@@ -1,4 +1,7 @@
-﻿using System;
+﻿#if NETFRAMEWORK
+using LTRLib.Extensions;
+#endif
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.DirectoryServices;
@@ -11,7 +14,7 @@ namespace dssearch;
 
 public static class ActiveDirectoryInfo
 {
-    static IEnumerable<string> EnumerateMessages(this Exception ex)
+    static IEnumerable<string> EnumerateMessages(this Exception? ex)
     {
         while (ex is not null)
         {
@@ -39,7 +42,7 @@ public static class ActiveDirectoryInfo
 
     public static int InternalMain(string[] args)
     {
-        DirectoryEntry entry = null;
+        DirectoryEntry? entry = null;
 
         // Examples to specify a domain
         //var adPath = "LDAP://DC=olofdom,DC=se";
@@ -51,6 +54,7 @@ public static class ActiveDirectoryInfo
                 if (entry is not null)
                 {
                     entry.Dispose();
+                    entry = null;
                 }
                 entry = new DirectoryEntry(arg);
             }
@@ -131,24 +135,19 @@ public static class ActiveDirectoryInfo
 
     public static string FormatProp(PropertyValueCollection prop)
     {
-        if (prop.Value is byte[] guidBytes &&
-            guidBytes.Length == 16 &&
-            prop.PropertyName.IndexOf("GUID", StringComparison.OrdinalIgnoreCase) >= 0)
+        return prop.Value switch
         {
-            return $"{prop.PropertyName} = {new Guid(guidBytes)}";
-        }
-        else if (prop.Value is byte[] sidBytes &&
-            prop.PropertyName.IndexOf("Sid", StringComparison.OrdinalIgnoreCase) >= 0)
-        {
-            return $"{prop.PropertyName} = {new SecurityIdentifier(sidBytes, 0)}";
-        }
-        else
-        {
-            return $"{prop.PropertyName} = {FormatProp(prop.Value)}";
-        }
+            byte[] guidBytes when guidBytes.Length == 16 && prop.PropertyName.Contains("GUID", StringComparison.OrdinalIgnoreCase)
+                => $"{prop.PropertyName} = {new Guid(guidBytes)}",
+
+            byte[] sidBytes when prop.PropertyName.Contains("Sid", StringComparison.OrdinalIgnoreCase)
+                => $"{prop.PropertyName} = {new SecurityIdentifier(sidBytes, 0)}",
+            
+            _ => $"{prop.PropertyName} = {FormatProp(prop.Value)}"
+        };
     }
 
-    private static string FormatProp(object propValue)
+    private static string FormatProp(object? propValue)
     {
         if (propValue is null)
         {
@@ -171,11 +170,9 @@ public static class ActiveDirectoryInfo
         }
         else if (propValue is object[] array)
         {
-            return "{" +
-                Environment.NewLine +
-                string.Join(";" + Environment.NewLine,
-                Array.ConvertAll(array, o => $"  {FormatProp(o)}")) + Environment.NewLine +
-                "}";
+            return @$"{{
+{string.Join(";" + Environment.NewLine, Array.ConvertAll(array, o => $"  {FormatProp(o)}"))}
+}}";
         }
         else if (propValue.GetType() is IReflect reflect)
         {
@@ -188,11 +185,11 @@ public static class ActiveDirectoryInfo
 
             var obj = Convert.ChangeType(propValue, type);
 
-            return obj.ToString();
+            return obj.ToString() ?? "(null)";
         }
         else
         {
-            return propValue.ToString();
+            return propValue.ToString() ?? "(null)";
         }
     }
 }

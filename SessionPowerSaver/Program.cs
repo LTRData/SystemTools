@@ -25,7 +25,7 @@ public static class Program
         AutoFlush = true
     };
 
-    private static void LogWrite(string message)
+    private static void LogWrite(string? message)
     {
         message = $"{DateTime.UtcNow:o} Thread {Environment.CurrentManagedThreadId:X5} {message}";
 
@@ -196,7 +196,7 @@ public static class Program
         }
     }
 
-    private static Process SafeOpenProcess(int processId)
+    private static Process? SafeOpenProcess(int processId)
     {
         try
         {
