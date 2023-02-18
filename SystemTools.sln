@@ -28,6 +28,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageMBR2GPT", "ImageMBR2GP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ipcalc", "ipcalc\ipcalc.csproj", "{A46C179E-F0DC-4ECF-9DA8-17F0CA2F11AF}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StripeBlockSwap", "StripeBlockSwap\StripeBlockSwap.csproj", "{6C5AC1C4-B34A-4523-8796-8474E0454D0B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -158,6 +160,18 @@ Global
 		{A46C179E-F0DC-4ECF-9DA8-17F0CA2F11AF}.Release|x64.Build.0 = Release|Any CPU
 		{A46C179E-F0DC-4ECF-9DA8-17F0CA2F11AF}.Release|x86.ActiveCfg = Release|Any CPU
 		{A46C179E-F0DC-4ECF-9DA8-17F0CA2F11AF}.Release|x86.Build.0 = Release|Any CPU
+		{6C5AC1C4-B34A-4523-8796-8474E0454D0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C5AC1C4-B34A-4523-8796-8474E0454D0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C5AC1C4-B34A-4523-8796-8474E0454D0B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6C5AC1C4-B34A-4523-8796-8474E0454D0B}.Debug|x64.Build.0 = Debug|Any CPU
+		{6C5AC1C4-B34A-4523-8796-8474E0454D0B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6C5AC1C4-B34A-4523-8796-8474E0454D0B}.Debug|x86.Build.0 = Debug|Any CPU
+		{6C5AC1C4-B34A-4523-8796-8474E0454D0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C5AC1C4-B34A-4523-8796-8474E0454D0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C5AC1C4-B34A-4523-8796-8474E0454D0B}.Release|x64.ActiveCfg = Release|Any CPU
+		{6C5AC1C4-B34A-4523-8796-8474E0454D0B}.Release|x64.Build.0 = Release|Any CPU
+		{6C5AC1C4-B34A-4523-8796-8474E0454D0B}.Release|x86.ActiveCfg = Release|Any CPU
+		{6C5AC1C4-B34A-4523-8796-8474E0454D0B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
