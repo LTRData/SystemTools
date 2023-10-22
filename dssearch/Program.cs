@@ -1,4 +1,5 @@
 ﻿#if NETFRAMEWORK
+using LTRData.Extensions.Buffers;
 using LTRLib.Extensions;
 #endif
 using System;
@@ -56,6 +57,7 @@ public static class ActiveDirectoryInfo
                     entry.Dispose();
                     entry = null;
                 }
+
                 entry = new DirectoryEntry(arg);
             }
 

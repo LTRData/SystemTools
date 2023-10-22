@@ -169,7 +169,7 @@ Partial Public Class Dataviewer
         End If
     End Sub
 
-    Private Sub btnAbout_Click(sender As System.Object, e As System.EventArgs) Handles btnAbout.Click
+    Private Sub btnAbout_Click(sender As Object, e As EventArgs) Handles btnAbout.Click
         Using AboutBox As New AboutBox
             AboutBox.ShowDialog(Me)
         End Using

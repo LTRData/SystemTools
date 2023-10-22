@@ -1,7 +1,6 @@
-﻿using LTRLib.Extensions;
+﻿using LTRData.Extensions.CommandLine;
+using LTRData.Extensions.Formatting;
 using LTRLib.IO;
-using LTRLib.LTRGeneric;
-using RTools_NTS.Util;
 using System;
 using System.IO;
 using System.Threading;
@@ -38,7 +37,7 @@ public static class Program
 
     public static async Task<int> MainAsync(string[] args, CancellationToken cancellationToken)
     {
-        var cmds = StringSupport.ParseCommandLine(args, StringComparer.Ordinal);
+        var cmds = CommandLineParser.ParseCommandLine(args, StringComparer.Ordinal);
 
         var blockSize = 0L;
         var inoffset = 0L;
@@ -50,15 +49,15 @@ public static class Program
         foreach (var cmd in cmds)
         {
             if (cmd.Key == "bsize" && cmd.Value.Length == 1 &&
-                StringSupport.TryParseSuffixedSize(cmd.Value[0], out blockSize))
+                SizeFormatting.TryParseSuffixedSize(cmd.Value[0], out blockSize))
             {
             }
             else if (cmd.Key == "inoffset" && cmd.Value.Length == 1 &&
-                StringSupport.TryParseSuffixedSize(cmd.Value[0], out inoffset))
+                SizeFormatting.TryParseSuffixedSize(cmd.Value[0], out inoffset))
             {
             }
             else if (cmd.Key == "outoffset" && cmd.Value.Length == 1 &&
-                StringSupport.TryParseSuffixedSize(cmd.Value[0], out outoffset))
+                SizeFormatting.TryParseSuffixedSize(cmd.Value[0], out outoffset))
             {
             }
             else if (cmd.Key == "in" && cmd.Value.Length == 1)

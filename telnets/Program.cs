@@ -1,4 +1,6 @@
-﻿using LTRLib.Extensions;
+﻿using LTRData.Extensions.Buffers;
+using LTRData.Extensions.Formatting;
+using LTRLib.Extensions;
 using LTRLib.IO;
 using LTRLib.LTRGeneric;
 using System;
@@ -93,7 +95,8 @@ public static class Program
             local_listener.Listen(1);
 
             var telnet_arguments = options
-                .Concat(new[] { IPAddress.Loopback.ToString(), local_port.ToString() })
+                .Append(IPAddress.Loopback.ToString())
+                .Append(local_port.ToString() ?? "")
                 .Join(' ');
 
             Console.WriteLine($"Starting '{telnet_exe}' with arguments '{telnet_arguments}'");

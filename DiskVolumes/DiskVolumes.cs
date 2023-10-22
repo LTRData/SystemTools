@@ -3,8 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
-using LTRLib.Extensions;
 using System.IO;
+using LTRData.Extensions.Formatting;
 
 namespace DiskVolumes;
 

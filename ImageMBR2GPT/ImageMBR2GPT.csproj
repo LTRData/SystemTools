@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="LTRLib40" Version="*" />
+    <PackageReference Include="LTRData.Extensions" Version="*" />
     <PackageReference Include="LTRData.DiscUtils.Core" Version="*" />
     <PackageReference Include="LTRData.DiscUtils.Streams" Version="*" />
     <PackageReference Include="LTRData.DiscUtils.Dmg" Version="*" />

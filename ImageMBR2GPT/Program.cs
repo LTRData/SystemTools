@@ -2,10 +2,9 @@
 using System;
 using System.IO;
 using System.Linq;
-using LTRLib.Extensions;
 using DiscUtils.Partitions;
 using DiscUtils.Raw;
-using LTRLib.LTRGeneric;
+using LTRData.Extensions.Formatting;
 
 namespace ImageMBR2GPT;
 
@@ -58,12 +57,8 @@ public static class Program
 
             using var disk = OpenVirtualDisk(arg, FileAccess.ReadWrite);
 
-            var partition_table = disk.Partitions;
-
-            if (partition_table is null)
-            {
-                throw new NotSupportedException("No partitions detected.");
-            }
+            var partition_table = disk.Partitions
+                ?? throw new NotSupportedException("No partitions detected.");
 
             Console.WriteLine($"Current partition table: {partition_table.GetType().Name}");
 
@@ -75,7 +70,7 @@ public static class Program
 
             foreach (var (i, p) in extents)
             {
-                Console.WriteLine($"Partition {i}, {p.TypeAsString}, offset sector {p.FirstSector}, number of sectors {p.SectorCount} ({StringSupport.FormatBytes(p.SectorCount * disk.Geometry.BytesPerSector)})");
+                Console.WriteLine($"Partition {i}, {p.TypeAsString}, offset sector {p.FirstSector}, number of sectors {p.SectorCount} ({SizeFormatting.FormatBytes(p.SectorCount * disk.Geometry.BytesPerSector)})");
             }
 
             Console.WriteLine("Do you want to replace the current partition table with a new GPT partition table? (y/N)");
@@ -96,6 +91,7 @@ public static class Program
                 {
                     partitionType = guidPartition.GuidType;
                 }
+
                 Console.WriteLine($"Creating partition {i}, offset sector {p.FirstSector}, number of sectors {p.SectorCount}");
                 new_table.Create(p.FirstSector, p.LastSector, partitionType, 0, null);
             }

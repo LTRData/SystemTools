@@ -15,11 +15,13 @@ Public NotInheritable Class AboutBox
 
         ' Set the title of the form.
         Dim ApplicationTitle As String
+
         If title <> "" Then
             ApplicationTitle = title
         Else
             ApplicationTitle = IO.Path.GetFileNameWithoutExtension(asm.Location)
         End If
+
         Text = $"About {ApplicationTitle}"
         ' Initialize all of the text displayed on the About Box.
         ' TODO: Customize the application's assembly information in the "Application" pane of the project 
@@ -41,11 +43,11 @@ Public NotInheritable Class AboutBox
         TextBoxDescription.Text = sb.ToString()
     End Sub
 
-    Private Sub OKButton_Click(sender As System.Object, e As System.EventArgs) Handles OKButton.Click
+    Private Sub OKButton_Click(sender As Object, e As EventArgs) Handles OKButton.Click
         Close()
     End Sub
 
-    Private Sub LinkLabel_LinkClicked(sender As System.Object, e As System.Windows.Forms.LinkLabelLinkClickedEventArgs) Handles LinkLabel.LinkClicked
+    Private Sub LinkLabel_LinkClicked(sender As Object, e As Windows.Forms.LinkLabelLinkClickedEventArgs) Handles LinkLabel.LinkClicked
         Process.Start(New ProcessStartInfo With {.FileName = "http://www.ltr-data.se", .UseShellExecute = True})?.Dispose()
     End Sub
 End Class

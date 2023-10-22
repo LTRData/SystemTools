@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-	<PackageReference Include="LTRLib" Version="*" />
+    <PackageReference Include="LTRLib.NativeIo" Version="*" />
   </ItemGroup>
 
 </Project>

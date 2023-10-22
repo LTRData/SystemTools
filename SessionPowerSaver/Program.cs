@@ -1,5 +1,5 @@
-﻿using LTRLib.IO;
-using LTRLib.Extensions;
+﻿using LTRData.Extensions.Formatting;
+using LTRLib.IO;
 using LTRLib.Services.WTS;
 using Microsoft.Win32;
 using System;
@@ -63,6 +63,7 @@ public static class Program
                 {
                     break;
                 }
+
                 ppid = p.QueryBasicInformation().ParentProcessId.ToInt32();
             }
         }
