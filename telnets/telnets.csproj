@@ -3,7 +3,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net35;net40;net6.0</TargetFrameworks>
+    <TargetFrameworks>net35;net40;net6.0;net8.0</TargetFrameworks>
     <Title>telnets - Client for telnet over SSL/TLS</Title>
     <Product>telnets</Product>
     <Copyright>Copyright (c) 2017-2022 LTR Data, Olof Lagerkvist</Copyright>

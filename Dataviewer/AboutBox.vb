@@ -47,7 +47,7 @@ Public NotInheritable Class AboutBox
         Close()
     End Sub
 
-    Private Sub LinkLabel_LinkClicked(sender As Object, e As Windows.Forms.LinkLabelLinkClickedEventArgs) Handles LinkLabel.LinkClicked
+    Private Sub LinkLabel_LinkClicked(sender As Object, e As System.Windows.Forms.LinkLabelLinkClickedEventArgs) Handles LinkLabel.LinkClicked
         Process.Start(New ProcessStartInfo With {.FileName = "http://www.ltr-data.se", .UseShellExecute = True})?.Dispose()
     End Sub
 End Class

@@ -3,7 +3,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net6.0;net35;net40</TargetFrameworks>
+    <TargetFrameworks>net6.0;net8.0;net35;net40</TargetFrameworks>
     <Title>DiskVolumes</Title>
     <Product>DiskVolumes</Product>
     <Copyright>Copyright © LTR Data, Olof Lagerkvist 2015-2022</Copyright>
