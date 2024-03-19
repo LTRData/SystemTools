@@ -53,7 +53,7 @@ public static class Program
         try
         {
             currentProcessTree.Add(CurrentProcess.Id);
-            for (var ppid = CurrentProcess.QueryBasicInformation().ParentProcessId.ToInt32();
+            for (var ppid = (int)CurrentProcess.QueryBasicInformation().ParentProcessId;
                 ppid != 0;)
             {
                 currentProcessTree.Add(ppid);
@@ -64,7 +64,7 @@ public static class Program
                     break;
                 }
 
-                ppid = p.QueryBasicInformation().ParentProcessId.ToInt32();
+                ppid = (int)p.QueryBasicInformation().ParentProcessId;
             }
         }
         catch
