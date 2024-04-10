@@ -20,7 +20,7 @@
     <PackageReference Include="LTRData.DiscUtils.Vmdk" Version="*" />
     <PackageReference Include="LTRData.DiscUtils.Wim" Version="*" />
     <PackageReference Include="LTRData.DiscUtils.Xva" Version="*" />
-    <PackageReference Include="Microsoft.Management.Infrastructure" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Management.Infrastructure" Version="3.*" />
   </ItemGroup>
 
   <ItemGroup>
