@@ -86,7 +86,7 @@ public static class DiskVolumes
 
             foreach (var ext in NativeFileIO.GetVolumeDiskExtents(volobj))
             {
-                Console.WriteLine($"Disk {ext.DiskNumber} at {ext.StartingOffset}, {ext.ExtentLength} bytes.");
+                Console.WriteLine($"Disk {ext.DiskNumber} at {ext.StartingOffset}, {ext.ExtentLength} bytes ({SizeFormatting.FormatBytes(ext.ExtentLength)}).");
             }
         }
         catch (Exception ex)
