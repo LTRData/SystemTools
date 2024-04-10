@@ -30,7 +30,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ipcalc", "ipcalc\ipcalc.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StripeBlockSwap", "StripeBlockSwap\StripeBlockSwap.csproj", "{6C5AC1C4-B34A-4523-8796-8474E0454D0B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "waitps", "waitps\waitps.csproj", "{5F0421F2-010C-4D24-8A67-F4DEA22B6614}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "waitps", "waitps\waitps.csproj", "{5F0421F2-010C-4D24-8A67-F4DEA22B6614}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
