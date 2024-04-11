@@ -57,14 +57,14 @@ public static class DiskVolumes
         {
             var target = NativeFileIO.QueryDosDevice(vol.Substring(4, 44))?.FirstOrDefault();
 
-            Console.WriteLine($"Target: {target}");
+            Console.WriteLine($"Device object: {target}");
 
             var links = NativeFileIO.QueryDosDevice()
                 .Select(l => new { l, t = NativeFileIO.QueryDosDevice(l) })
                 .Where(o => o.t is not null && o.t.Contains(target, StringComparer.OrdinalIgnoreCase))
                 .Select(o => o.l);
 
-            Console.WriteLine("Links:");
+            Console.WriteLine("Device object links:");
 
             foreach (var link in links)
             {
@@ -79,14 +79,21 @@ public static class DiskVolumes
             }
             else
             {
-                Console.WriteLine($"Mounted at: {string.Join(" ", mnt)}");
+                Console.WriteLine($"Mounted at:");
+
+                foreach (var m in mnt)
+                {
+                    Console.WriteLine($"  {m}");
+                }
             }
+
+            Console.WriteLine($"Disk extents:");
 
             using var volobj = NativeFileIO.OpenFileHandle(vol.TrimEnd('\\'), FileMode.Open, 0, FileShare.ReadWrite, false);
 
             foreach (var ext in NativeFileIO.GetVolumeDiskExtents(volobj))
             {
-                Console.WriteLine($"Disk {ext.DiskNumber} at {ext.StartingOffset}, {ext.ExtentLength} bytes ({SizeFormatting.FormatBytes(ext.ExtentLength)}).");
+                Console.WriteLine($"  Disk {ext.DiskNumber} at {ext.StartingOffset}, {ext.ExtentLength} bytes ({SizeFormatting.FormatBytes(ext.ExtentLength)}).");
             }
         }
         catch (Exception ex)
