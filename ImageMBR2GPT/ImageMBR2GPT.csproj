@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="LTRData.Extensions" Version="*" />
+    <PackageReference Include="LTRLib.NativeIo" Version="*" />
     <PackageReference Include="LTRData.DiscUtils.Core" Version="*" />
     <PackageReference Include="LTRData.DiscUtils.Streams" Version="*" />
     <PackageReference Include="LTRData.DiscUtils.Dmg" Version="*" />
