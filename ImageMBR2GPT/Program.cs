@@ -8,6 +8,7 @@ using LTRData.Extensions.Formatting;
 using LTRData.Extensions.CommandLine;
 using DiscUtils.Streams;
 using LTRLib.IO;
+using System.Runtime.InteropServices;
 
 namespace ImageMBR2GPT;
 
@@ -57,6 +58,7 @@ public static class Program
     public static void UnsafeMain(params string[] args)
     {
         var targetLayout = TargetLayout.None;
+        var access = FileAccess.Read;
 
         string[]? images = null;
 
@@ -65,18 +67,19 @@ public static class Program
         foreach (var cmd in cmds)
         {
             if (cmd.Key is "g" or "gpt"
-                && !cmds.ContainsKey("m")
-                && !cmds.ContainsKey("mbr"))
+                && targetLayout == TargetLayout.None)
             {
                 targetLayout = TargetLayout.GPT;
+                access = FileAccess.ReadWrite;
             }
             else if (cmd.Key is "m" or "mbr"
-                && !cmds.ContainsKey("g")
-                && !cmds.ContainsKey("gpt"))
+                && targetLayout == TargetLayout.None)
             {
                 targetLayout = TargetLayout.MBR;
+                access = FileAccess.ReadWrite;
             }
-            else if (cmd.Key == "")
+            else if (cmd.Key == ""
+                && cmd.Value.Length > 0)
             {
                 images = cmd.Value;
             }
@@ -112,7 +115,7 @@ ImageMBR2GPT [--gpt | --mbr] imagefile1 [imagefile2 ...]
         {
             Console.WriteLine($"Opening '{image}'...");
 
-            using var disk = OpenVirtualDisk(image, FileAccess.ReadWrite);
+            using var disk = OpenVirtualDisk(image, access);
 
             var partition_table = disk.Partitions
                 ?? throw new NotSupportedException("No partitions detected.");
@@ -215,13 +218,19 @@ ImageMBR2GPT [--gpt | --mbr] imagefile1 [imagefile2 ...]
 
     public static VirtualDisk OpenVirtualDisk(string path, FileAccess access)
     {
-        if (path.StartsWith(@"\\?\PhysicalDrive", StringComparison.OrdinalIgnoreCase)
-            || path.StartsWith(@"\\.\PhysicalDrive", StringComparison.OrdinalIgnoreCase)
-            || path.StartsWith("/dev/", StringComparison.Ordinal))
+#if NETCOREAPP
+        if (OperatingSystem.IsWindows())
         {
-            var stream = new DiskStream(path, access);
-            return new Disk(stream, ownsStream: Ownership.Dispose);
+#endif
+            if (path.StartsWith(@"\\?\PhysicalDrive", StringComparison.OrdinalIgnoreCase)
+                || path.StartsWith(@"\\.\PhysicalDrive", StringComparison.OrdinalIgnoreCase))
+            {
+                var stream = new DiskStream(path, access);
+                return new Disk(stream, ownsStream: Ownership.Dispose);
+            }
+#if NETCOREAPP
         }
+#endif
 
         return VirtualDisk.OpenDisk(path, access) ?? new Disk(path, access);
     }
