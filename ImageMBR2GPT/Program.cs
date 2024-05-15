@@ -120,6 +120,9 @@ ImageMBR2GPT [--gpt | --mbr] imagefile1 [imagefile2 ...]
             var partition_table = disk.Partitions
                 ?? throw new NotSupportedException("No partitions detected.");
 
+            var geometry = disk.Geometry
+                ?? throw new NotSupportedException("Unknown disk geometry");
+
             Console.WriteLine($"Current partition table: {partition_table.GetType().Name}");
 
             var partitions = partition_table.Partitions;
@@ -138,7 +141,7 @@ ImageMBR2GPT [--gpt | --mbr] imagefile1 [imagefile2 ...]
                     active = ", active";
                 }
 
-                Console.WriteLine($"Partition {i}, {p.TypeAsString}, offset sector {p.FirstSector}, number of sectors {p.SectorCount} ({SizeFormatting.FormatBytes(p.SectorCount * disk.Geometry.BytesPerSector)}){active}");
+                Console.WriteLine($"Partition {i}, {p.TypeAsString}, offset sector {p.FirstSector}, number of sectors {p.SectorCount} ({SizeFormatting.FormatBytes(p.SectorCount * geometry.BytesPerSector)}){active}");
             }
 
             if (targetLayout == TargetLayout.None)
