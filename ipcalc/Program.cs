@@ -1,4 +1,5 @@
-﻿using LTRData.Extensions.Formatting;
+﻿using LTRData.Extensions.Buffers;
+using LTRData.Extensions.Formatting;
 using LTRData.Extensions.Split;
 using LTRLib.Net;
 using System;
@@ -28,7 +29,7 @@ public static class Program
         return 0;
     }
 
-#if NETCOREAPP
+#if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
     private static IPAddress ParseIP(ReadOnlySpan<char> address) => IPAddress.Parse(address);
 
     private static byte ParseByte(ReadOnlySpan<char> chars) => byte.Parse(chars);
@@ -44,6 +45,8 @@ public static class Program
         var endAddress = arg.Split('-').ElementAtOrDefault(1);
         var netAddress = arg.Split('/').ElementAtOrDefault(0);
         var bitCount = arg.Split('/').ElementAtOrDefault(1);
+        var maskNetwork = arg.Split('%').ElementAtOrDefault(0);
+        var mask = arg.Split('%').ElementAtOrDefault(1);
 
         var ranges = new IPAddressRanges(AddressFamily.InterNetwork);
 
@@ -57,11 +60,50 @@ public static class Program
         {
             network = ranges.CalculateNetwork(ParseIP(netAddress), ParseByte(bitCount));
         }
+        else if (!maskNetwork.IsEmpty && !mask.IsEmpty)
+        {
+            network = ranges.CalculateNetwork(ParseIP(maskNetwork), ParseMask(ParseIP(mask)));
+        }
         else
         {
             throw new ArgumentException("Invalid address range syntax");
         }
 
         Console.WriteLine(@$"Network: {network.Network}/{network.BitCount} - {network.Broadcast} mask {network.Mask}");
+    }
+
+    private static byte ParseMask(IPAddress address)
+    {
+        byte bits = 0;
+
+        var bytes = address.GetAddressBytes();
+
+        if (BitConverter.IsLittleEndian)
+        {
+            Array.Reverse(bytes);
+        }
+
+        var lastOne = false;
+
+        for (byte i = 0; i < bytes.Length * 8; i++)
+        {
+            if (lastOne)
+            {
+                if (!bytes.GetBit(i))
+                {
+                    throw new ArgumentException($"Invalid mask: {address}");
+                }
+            }
+            else
+            {
+                if (bytes.GetBit(i))
+                {
+                    bits = i;
+                    lastOne = true;
+                }
+            }
+        }
+
+        return (byte)(bytes.Length * 8 - bits);
     }
 }
