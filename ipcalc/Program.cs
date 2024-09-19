@@ -85,7 +85,9 @@ public static class Program
 
         var lastOne = false;
 
-        for (byte i = 0; i < bytes.Length * 8; i++)
+        byte addressBits = (byte)(bytes.Length * 8);
+        
+        for (byte i = 0; i < addressBits; i++)
         {
             if (lastOne)
             {
@@ -104,6 +106,6 @@ public static class Program
             }
         }
 
-        return (byte)(bytes.Length * 8 - bits);
+        return (byte)(addressBits - bits);
     }
 }
