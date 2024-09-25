@@ -16,6 +16,7 @@ using Microsoft.Win32;
 using Microsoft.Management.Infrastructure;
 using System.Reflection;
 
+#pragma warning disable IDE0079 // Remove unnecessary suppression
 #pragma warning disable CA1416 // Validate platform compatibility
 #pragma warning disable IDE0057 // Use range operator
 
@@ -67,7 +68,6 @@ public static class Program
 #else
         ex.GetBaseException().Message; 
 #endif
-
 
     public static int Main(params string[] args)
     {
@@ -204,7 +204,13 @@ GetProductKey /path/windows_setup.iso");
                             var hive = new DiscUtilsRegistryHive(fs.Value, FileAccess.Read);
                             var key = hive.Root.OpenSubKey(@"Microsoft\Windows NT\CurrentVersion");
                             offline_root_keys.Add(key);
-                            value_getters.Add(new(@$"{arg}{Path.DirectorySeparatorChar}{wiminfo.FullName} index {fs.Key}", name => { lock (file) { return key.GetValue(name); } }));
+                            value_getters.Add(new(@$"{arg}{Path.DirectorySeparatorChar}{wiminfo.FullName} index {fs.Key}", name =>
+                            {
+                                lock (file)
+                                {
+                                    return key.GetValue(name);
+                                }
+                            }));
                         }
                     }
                     else if (File.Exists(arg) && Path.GetExtension(arg).Equals(".wim", StringComparison.OrdinalIgnoreCase))
@@ -219,7 +225,13 @@ GetProductKey /path/windows_setup.iso");
                             var hive = new DiscUtilsRegistryHive(fs.Value, FileAccess.Read);
                             var key = hive.Root.OpenSubKey(@"Microsoft\Windows NT\CurrentVersion");
                             offline_root_keys.Add(key);
-                            value_getters.Add(new($"{arg} index {fs.Key}", name => { lock (file) { return key.GetValue(name); } }));
+                            value_getters.Add(new($"{arg} index {fs.Key}", name =>
+                            {
+                                lock (file)
+                                {
+                                    return key.GetValue(name);
+                                }
+                            }));
                         }
                     }
                     else if (File.Exists(arg))
@@ -234,7 +246,13 @@ GetProductKey /path/windows_setup.iso");
                             var hive = new DiscUtilsRegistryHive(fs.Value, FileAccess.Read);
                             var key = hive.Root.OpenSubKey(@"Microsoft\Windows NT\CurrentVersion");
                             offline_root_keys.Add(key);
-                            value_getters.Add(new($"{arg} partition {fs.Key}", name => { lock (image) { return key.GetValue(name); } }));
+                            value_getters.Add(new($"{arg} partition {fs.Key}", name =>
+                            {
+                                lock (image)
+                                {
+                                    return key.GetValue(name);
+                                }
+                            }));
                         }
                     }
                     else
@@ -328,7 +346,7 @@ GetProductKey /path/windows_setup.iso");
         if (value("InstallDate") is int date &&
 	       date != 0)
         {
-            return new DateTime(1970, 1, 1).AddSeconds(date);
+            return new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(date);
         }
 
         return null;
@@ -444,12 +462,14 @@ GetProductKey /path/windows_setup.iso");
         for (var i = 24; i >= 0; i--)
         {
             var r = 0;
+            
             for (var j = 14; j >= 0; j--)
             {
                 r = (r << 8) | valueDataBuffer[j];
                 valueDataBuffer[j] = (byte)(r / 24);
                 r %= 24;
             }
+
             productKey[--o] = chars[r];
 
             if ((i % 5) == 0 && i != 0)

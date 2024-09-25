@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <RootNamespace>LTR.GetProductKey</RootNamespace>
     <OutputType>Exe</OutputType>
     <TargetFrameworks>net46;net6.0;net8.0</TargetFrameworks>
   </PropertyGroup>
