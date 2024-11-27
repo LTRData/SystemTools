@@ -16,6 +16,8 @@ public class PowerShellFs : IDokanOperations
 {
     public Runspace Runspace { get; }
 
+    public int DirectoryListingTimeoutResetIntervalMs { get; }
+
     private PowerShell GetPS()
     {
         var ps = PowerShell.Create();
@@ -134,7 +136,7 @@ public class PowerShellFs : IDokanOperations
                         {
                             if (entry.Value is null)
                             {
-                                filedata = Array.Empty<byte>();
+                                filedata = [];
                             }
                             else if (entry.Value is byte[] byteData)
                             {
@@ -360,11 +362,11 @@ public class PowerShellFs : IDokanOperations
         return NtStatus.Success;
     }
 
-    public NtStatus GetVolumeInformation(out string volumeLabel, out FileSystemFeatures features, out string fileSystemName, out uint maximumComponentLength, ref uint volumeSerialNumber, in DokanFileInfo info)
+    public NtStatus GetVolumeInformation(DokanMemory<char> volumeLabel, out FileSystemFeatures features, DokanMemory<char> fileSystemName, out uint maximumComponentLength, ref uint volumeSerialNumber, in DokanFileInfo info)
     {
-        volumeLabel = "PowerShell";
+        volumeLabel.SetString("PowerShell");
         features = FileSystemFeatures.ReadOnlyVolume | FileSystemFeatures.UnicodeOnDisk;
-        fileSystemName = "PowerShell";
+        fileSystemName.SetString("PowerShell");
         maximumComponentLength = 260;
         return NtStatus.Success;
     }

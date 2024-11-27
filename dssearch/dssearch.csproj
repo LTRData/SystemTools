@@ -3,7 +3,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net35;net40;net6.0;net8.0</TargetFrameworks>
+    <TargetFrameworks>net35;net40;net9.0;net8.0</TargetFrameworks>
     <Title>dssearch - Directory Services search tool</Title>
     <Product>dssearch</Product>
     <Copyright>Copyright © LTR Data, Olof Lagerkvist 2015-2022</Copyright>

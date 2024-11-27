@@ -3,7 +3,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFrameworks>net48;net6.0-windows;net8.0-windows</TargetFrameworks>
+    <TargetFrameworks>net48;net9.0-windows;net8.0-windows</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Title>SessionPowerSaver</Title>
     <Product>SessionPowerSaver</Product>

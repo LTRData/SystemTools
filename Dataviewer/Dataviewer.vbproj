@@ -3,7 +3,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFrameworks>net6.0-windows;net8.0-windows;net20;net40</TargetFrameworks>
+    <TargetFrameworks>net9.0-windows;net8.0-windows;net20;net40</TargetFrameworks>
     <RootNamespace>LTR.DataViewer</RootNamespace>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>

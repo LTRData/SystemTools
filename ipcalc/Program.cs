@@ -41,12 +41,12 @@ public static class Program
 
     public static void CalculateAddress(ReadOnlySpan<char> arg)
     {
-        var startAddress = arg.Split('-').ElementAtOrDefault(0);
-        var endAddress = arg.Split('-').ElementAtOrDefault(1);
-        var netAddress = arg.Split('/').ElementAtOrDefault(0);
-        var bitCount = arg.Split('/').ElementAtOrDefault(1);
-        var maskNetwork = arg.Split('%').ElementAtOrDefault(0);
-        var mask = arg.Split('%').ElementAtOrDefault(1);
+        var startAddress = arg.TokenEnum('-').ElementAtOrDefault(0);
+        var endAddress = arg.TokenEnum('-').ElementAtOrDefault(1);
+        var netAddress = arg.TokenEnum('/').ElementAtOrDefault(0);
+        var bitCount = arg.TokenEnum('/').ElementAtOrDefault(1);
+        var maskNetwork = arg.TokenEnum('%').ElementAtOrDefault(0);
+        var mask = arg.TokenEnum('%').ElementAtOrDefault(1);
 
         var ranges = new IPAddressRanges(AddressFamily.InterNetwork);
 
