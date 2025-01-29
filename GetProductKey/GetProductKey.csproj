@@ -3,7 +3,7 @@
   <PropertyGroup>
     <RootNamespace>LTR.GetProductKey</RootNamespace>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net46;net6.0;net8.0</TargetFrameworks>
+    <TargetFrameworks>net46;net9.0;net8.0</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
