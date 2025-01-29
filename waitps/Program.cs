@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -9,6 +10,8 @@ namespace waitps;
 
 public static class Program
 {
+    private static readonly string[] exeFileExtensions = [".exe", ".com", ".dll"];
+
     public static int Main(params string[] args)
     {
         var cmds = CommandLineParser.ParseCommandLine(args, StringComparer.Ordinal);
@@ -58,7 +61,14 @@ Processes can be specified as numeric process id or process name.");
 				}
 				else
                 {
-                    pslist.AddRange(Process.GetProcessesByName(process));
+                    var psName = process;
+
+                    if (exeFileExtensions.Contains(Path.GetExtension(psName), StringComparer.OrdinalIgnoreCase))
+                    {
+                        psName = psName.Remove(psName.Length - 4);
+                    }
+
+                    pslist.AddRange(Process.GetProcessesByName(psName));
                 }
             }
 
