@@ -23,7 +23,7 @@ public static partial class Program
 
         var waitAny = false;
 
-        string[] processes = [];
+        string[] windows = [];
 
         foreach (var cmd in cmds)
         {
@@ -34,7 +34,7 @@ public static partial class Program
                     break;
 
                 case "":
-                    processes = cmd.Value;
+                    windows = cmd.Value;
                     break;
 
                 default:
@@ -56,11 +56,11 @@ Windows can be specified as numeric window handles or window title strings.");
 
         var waits = new List<EventWaitHandle>();
 
-        foreach (var arg in args)
+        foreach (var window in windows)
         {
-            if (!long.TryParse(arg, out var hwnd))
+            if (!int.TryParse(window, out var hwnd))
             {
-                var windowTitle = arg;
+                var windowTitle = window;
                 string? className = null;
                 var delim = windowTitle.IndexOf('\\');
                 if (delim > 0)
@@ -69,16 +69,16 @@ Windows can be specified as numeric window handles or window title strings.");
                     windowTitle = windowTitle.Substring(delim + 1);
                 }
 
-                hwnd = FindWindowW(className, windowTitle);
+                hwnd = (int)FindWindowW(className, windowTitle);
             }
 
             if (hwnd == 0)
             {
-                Console.WriteLine($"Window '{arg}' not found.");
+                Console.WriteLine($"Window '{window}' not found.");
                 continue;
             }
 
-            Console.WriteLine($"{hwnd,7} {arg}");
+            Console.WriteLine($"{hwnd,7} {window}");
 
             var element = AutomationElement.FromHandle((nint)hwnd);
 
