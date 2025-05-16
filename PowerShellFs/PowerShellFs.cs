@@ -1,5 +1,6 @@
 ﻿using DiscUtils.Internal;
 using DokanNet;
+using LTRData.Extensions.Native.Memory;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -36,7 +37,7 @@ public class PowerShellFs : IDokanOperations
         public byte[]? FileData;
     }
 
-    public NtStatus CreateFile(ReadOnlyDokanMemory<char> fileNamePtr, NativeFileAccess access, FileShare share, FileMode mode, FileOptions options, FileAttributes attributes, ref DokanFileInfo info)
+    public NtStatus CreateFile(ReadOnlyNativeMemory<char> fileNamePtr, NativeFileAccess access, FileShare share, FileMode mode, FileOptions options, FileAttributes attributes, ref DokanFileInfo info)
     {
         var path = TranslatePath(fileNamePtr.Span);
 
@@ -84,7 +85,7 @@ public class PowerShellFs : IDokanOperations
         return NtStatus.Success;
     }
 
-    public void Cleanup(ReadOnlyDokanMemory<char> fileNamePtr, ref DokanFileInfo info)
+    public void Cleanup(ReadOnlyNativeMemory<char> fileNamePtr, ref DokanFileInfo info)
     {
         if (info.Context is IDisposable context)
         {
@@ -93,11 +94,11 @@ public class PowerShellFs : IDokanOperations
         }
     }
 
-    public void CloseFile(ReadOnlyDokanMemory<char> fileNamePtr, ref DokanFileInfo info)
+    public void CloseFile(ReadOnlyNativeMemory<char> fileNamePtr, ref DokanFileInfo info)
     {
     }
 
-    public NtStatus ReadFile(ReadOnlyDokanMemory<char> fileNamePtr, DokanMemory<byte> buffer, out int bytesRead, long offset, in DokanFileInfo info)
+    public NtStatus ReadFile(ReadOnlyNativeMemory<char> fileNamePtr, NativeMemory<byte> buffer, out int bytesRead, long offset, in DokanFileInfo info)
     {
         var path = TranslatePath(fileNamePtr.Span);
 
@@ -171,15 +172,15 @@ public class PowerShellFs : IDokanOperations
         return NtStatus.Success;
     }
 
-    public NtStatus WriteFile(ReadOnlyDokanMemory<char> fileNamePtr, ReadOnlyDokanMemory<byte> buffer, out int bytesWritten, long offset, in DokanFileInfo info)
+    public NtStatus WriteFile(ReadOnlyNativeMemory<char> fileNamePtr, ReadOnlyNativeMemory<byte> buffer, out int bytesWritten, long offset, in DokanFileInfo info)
     {
         bytesWritten = 0;
         return NtStatus.NotImplemented;
     }
 
-    public NtStatus FlushFileBuffers(ReadOnlyDokanMemory<char> fileNamePtr, in DokanFileInfo info) => NtStatus.Success;
+    public NtStatus FlushFileBuffers(ReadOnlyNativeMemory<char> fileNamePtr, in DokanFileInfo info) => NtStatus.Success;
 
-    public NtStatus GetFileInformation(ReadOnlyDokanMemory<char> fileNamePtr, out ByHandleFileInformation fileInfo, in DokanFileInfo info)
+    public NtStatus GetFileInformation(ReadOnlyNativeMemory<char> fileNamePtr, out ByHandleFileInformation fileInfo, in DokanFileInfo info)
     {
         var path = TranslatePath(fileNamePtr.Span);
 
@@ -243,7 +244,7 @@ public class PowerShellFs : IDokanOperations
         return NtStatus.Success;
     }
 
-    public NtStatus FindFiles(ReadOnlyDokanMemory<char> fileNamePtr, out IEnumerable<FindFileInformation> files, in DokanFileInfo info)
+    public NtStatus FindFiles(ReadOnlyNativeMemory<char> fileNamePtr, out IEnumerable<FindFileInformation> files, in DokanFileInfo info)
         => FindFilesWithPattern(fileNamePtr, "*", out files);
 
     public static string TranslatePath(ReadOnlySpan<char> path)
@@ -270,13 +271,13 @@ public class PowerShellFs : IDokanOperations
         }
     }
 
-    public NtStatus FindFilesWithPattern(ReadOnlyDokanMemory<char> fileNamePtr,
-                                         ReadOnlyDokanMemory<char> searchPatternPtr,
+    public NtStatus FindFilesWithPattern(ReadOnlyNativeMemory<char> fileNamePtr,
+                                         ReadOnlyNativeMemory<char> searchPatternPtr,
                                          out IEnumerable<FindFileInformation> files,
                                          in DokanFileInfo info)
         => FindFilesWithPattern(fileNamePtr, searchPatternPtr.ToString().Replace('<', '*'), out files);
 
-    public NtStatus FindFilesWithPattern(ReadOnlyDokanMemory<char> fileNamePtr,
+    public NtStatus FindFilesWithPattern(ReadOnlyNativeMemory<char> fileNamePtr,
                                          string searchPattern,
                                          out IEnumerable<FindFileInformation> files)
     {
@@ -336,23 +337,23 @@ public class PowerShellFs : IDokanOperations
         }
     }
 
-    public NtStatus SetFileAttributes(ReadOnlyDokanMemory<char> fileNamePtr, FileAttributes attributes, in DokanFileInfo info) => NtStatus.NotImplemented;
+    public NtStatus SetFileAttributes(ReadOnlyNativeMemory<char> fileNamePtr, FileAttributes attributes, in DokanFileInfo info) => NtStatus.NotImplemented;
 
-    public NtStatus SetFileTime(ReadOnlyDokanMemory<char> fileNamePtr, DateTime? creationTime, DateTime? lastAccessTime, DateTime? lastWriteTime, in DokanFileInfo info) => NtStatus.NotImplemented;
+    public NtStatus SetFileTime(ReadOnlyNativeMemory<char> fileNamePtr, DateTime? creationTime, DateTime? lastAccessTime, DateTime? lastWriteTime, in DokanFileInfo info) => NtStatus.NotImplemented;
 
-    public NtStatus DeleteFile(ReadOnlyDokanMemory<char> fileNamePtr, in DokanFileInfo info) => NtStatus.NotImplemented;
+    public NtStatus DeleteFile(ReadOnlyNativeMemory<char> fileNamePtr, in DokanFileInfo info) => NtStatus.NotImplemented;
 
-    public NtStatus DeleteDirectory(ReadOnlyDokanMemory<char> fileNamePtr, in DokanFileInfo info) => NtStatus.NotImplemented;
+    public NtStatus DeleteDirectory(ReadOnlyNativeMemory<char> fileNamePtr, in DokanFileInfo info) => NtStatus.NotImplemented;
 
-    public NtStatus MoveFile(ReadOnlyDokanMemory<char> oldName, ReadOnlyDokanMemory<char> newName, bool replace, ref DokanFileInfo info) => NtStatus.NotImplemented;
+    public NtStatus MoveFile(ReadOnlyNativeMemory<char> oldName, ReadOnlyNativeMemory<char> newName, bool replace, ref DokanFileInfo info) => NtStatus.NotImplemented;
 
-    public NtStatus SetEndOfFile(ReadOnlyDokanMemory<char> fileNamePtr, long length, in DokanFileInfo info) => NtStatus.NotImplemented;
+    public NtStatus SetEndOfFile(ReadOnlyNativeMemory<char> fileNamePtr, long length, in DokanFileInfo info) => NtStatus.NotImplemented;
 
-    public NtStatus SetAllocationSize(ReadOnlyDokanMemory<char> fileNamePtr, long length, in DokanFileInfo info) => NtStatus.NotImplemented;
+    public NtStatus SetAllocationSize(ReadOnlyNativeMemory<char> fileNamePtr, long length, in DokanFileInfo info) => NtStatus.NotImplemented;
 
-    public NtStatus LockFile(ReadOnlyDokanMemory<char> fileNamePtr, long offset, long length, in DokanFileInfo info) => NtStatus.NotImplemented;
+    public NtStatus LockFile(ReadOnlyNativeMemory<char> fileNamePtr, long offset, long length, in DokanFileInfo info) => NtStatus.NotImplemented;
 
-    public NtStatus UnlockFile(ReadOnlyDokanMemory<char> fileNamePtr, long offset, long length, in DokanFileInfo info) => NtStatus.NotImplemented;
+    public NtStatus UnlockFile(ReadOnlyNativeMemory<char> fileNamePtr, long offset, long length, in DokanFileInfo info) => NtStatus.NotImplemented;
 
     public NtStatus GetDiskFreeSpace(out long freeBytesAvailable, out long totalNumberOfBytes, out long totalNumberOfFreeBytes, in DokanFileInfo info)
     {
@@ -362,7 +363,7 @@ public class PowerShellFs : IDokanOperations
         return NtStatus.Success;
     }
 
-    public NtStatus GetVolumeInformation(DokanMemory<char> volumeLabel, out FileSystemFeatures features, DokanMemory<char> fileSystemName, out uint maximumComponentLength, ref uint volumeSerialNumber, in DokanFileInfo info)
+    public NtStatus GetVolumeInformation(NativeMemory<char> volumeLabel, out FileSystemFeatures features, NativeMemory<char> fileSystemName, out uint maximumComponentLength, ref uint volumeSerialNumber, in DokanFileInfo info)
     {
         volumeLabel.SetString("PowerShell");
         features = FileSystemFeatures.ReadOnlyVolume | FileSystemFeatures.UnicodeOnDisk;
@@ -371,19 +372,19 @@ public class PowerShellFs : IDokanOperations
         return NtStatus.Success;
     }
 
-    public NtStatus GetFileSecurity(ReadOnlyDokanMemory<char> fileNamePtr, out FileSystemSecurity security, AccessControlSections sections, in DokanFileInfo info)
+    public NtStatus GetFileSecurity(ReadOnlyNativeMemory<char> fileNamePtr, out FileSystemSecurity security, AccessControlSections sections, in DokanFileInfo info)
     {
         security = null!;
         return NtStatus.NotImplemented;
     }
 
-    public NtStatus SetFileSecurity(ReadOnlyDokanMemory<char> fileNamePtr, FileSystemSecurity security, AccessControlSections sections, in DokanFileInfo info) => NtStatus.NotImplemented;
+    public NtStatus SetFileSecurity(ReadOnlyNativeMemory<char> fileNamePtr, FileSystemSecurity security, AccessControlSections sections, in DokanFileInfo info) => NtStatus.NotImplemented;
 
-    public NtStatus Mounted(ReadOnlyDokanMemory<char> drive, in DokanFileInfo info) => NtStatus.Success;
+    public NtStatus Mounted(ReadOnlyNativeMemory<char> drive, in DokanFileInfo info) => NtStatus.Success;
 
     public NtStatus Unmounted(in DokanFileInfo info) => NtStatus.Success;
 
-    public NtStatus FindStreams(ReadOnlyDokanMemory<char> fileNamePtr, out IEnumerable<FindFileInformation> streams, in DokanFileInfo info)
+    public NtStatus FindStreams(ReadOnlyNativeMemory<char> fileNamePtr, out IEnumerable<FindFileInformation> streams, in DokanFileInfo info)
     {
         streams = null!;
         return NtStatus.NotImplemented;
