@@ -15,9 +15,7 @@ Partial Public Class Dataviewer
     Private WithEvents SourceTable As DataTable
 
     Public Sub SetSourceTable(DataTable As DataTable)
-        If SourceTable IsNot Nothing Then
-            SourceTable.Dispose()
-        End If
+        SourceTable?.Dispose()
         SourceTable = Nothing
         DataGridView.DataSource = DataTable
         SourceTable = DataTable
@@ -55,12 +53,10 @@ Partial Public Class Dataviewer
         tbTable.Select()
     End Sub
 
-    Protected Overrides Sub OnClosing(e As CancelEventArgs)
-        MyBase.OnClosing(e)
+    Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
+        MyBase.OnFormClosing(e)
 
-        If BindingManager IsNot Nothing Then
-            BindingManager.EndCurrentEdit()
-        End If
+        BindingManager?.EndCurrentEdit()
 
         Registry.SetValue("HKEY_CURRENT_USER\Software\LTR Data\DataViewer", "DataSource", tbDatasource.Text)
         Registry.SetValue("HKEY_CURRENT_USER\Software\LTR Data\DataViewer", "Query", tbTable.Text)

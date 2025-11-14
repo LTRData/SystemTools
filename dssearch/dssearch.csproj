@@ -3,19 +3,19 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net35;net40;net9.0;net8.0</TargetFrameworks>
+    <TargetFrameworks>net35;net40;net10.0;net9.0;net8.0</TargetFrameworks>
     <Title>dssearch - Directory Services search tool</Title>
     <Product>dssearch</Product>
     <Copyright>Copyright © LTR Data, Olof Lagerkvist 2015-2022</Copyright>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework.CompareTo(`net5`))' &lt; 0">
+  <ItemGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'netcoreapp3.1'))">
     <PackageReference Include="LTRLib40" Version="*" />
     <Reference Include="System.DirectoryServices" />
     <Reference Include="System.DirectoryServices.AccountManagement" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework.CompareTo(`net5`))' &gt;= 0">
+  <ItemGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'netcoreapp3.1'))">
     <PackageReference Include="System.DirectoryServices" Version="*" />
     <PackageReference Include="System.DirectoryServices.AccountManagement" Version="*" />
   </ItemGroup>

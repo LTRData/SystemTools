@@ -299,14 +299,18 @@ public class PowerShellFs : IDokanOperations
 
                 if (fileNamePtr.Span.IndexOfAny('?', '*') >= 0)
                 {
-                    var regx = Utilities.ConvertWildcardsToRegEx(fileNamePtr.Span.TrimStart('\\').ToString(), ignoreCase: true);
-                    drives = drives.Where(regx);
+                    if (Utilities.ConvertWildcardsToRegEx(fileNamePtr.Span.TrimStart('\\').ToString(), ignoreCase: true) is { } regx)
+                    {
+                        drives = drives.Where(regx);
+                    }
                 }
 
                 if (searchPattern != "*")
                 {
-                    var regx = Utilities.ConvertWildcardsToRegEx(searchPattern, ignoreCase: true);
-                    drives = drives.Where(regx);
+                    if (Utilities.ConvertWildcardsToRegEx(searchPattern, ignoreCase: true) is { } regx)
+                    {
+                        drives = drives.Where(regx);
+                    }
                 }
 
                 files = drives.Select(drive => new FindFileInformation

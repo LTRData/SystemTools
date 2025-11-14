@@ -3,7 +3,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFrameworks>net9.0-windows;net8.0-windows;net20;net40</TargetFrameworks>
+    <TargetFrameworks>net10.0-windows;net9.0-windows;net8.0-windows;net20;net40</TargetFrameworks>
     <RootNamespace>LTR.DataViewer</RootNamespace>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
@@ -18,14 +18,20 @@
     <FileVersion>1.1.0.0</FileVersion>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework.CompareTo(`net5`))' &lt; 0">
+  <ItemGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'netcoreapp3.1'))">
     <Reference Include="System.Data" />
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework.CompareTo(`net5`))' &gt;= 0">
+  <ItemGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'netcoreapp3.1'))">
     <PackageReference Include="System.Data.Odbc" Version="*" />
-	<PackageReference Include="System.Resources.Extensions" Version="*" />
+	<!--<PackageReference Include="System.Resources.Extensions" Version="*" />-->
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="My Project\app.manifest">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <!--<ItemGroup>
