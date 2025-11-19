@@ -10,10 +10,11 @@ using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 using System.Security.AccessControl;
 using System.Text;
+using NativeFileAccess = DokanNet.FileAccess;
 
 namespace PowerShellFs;
 
-public class PowerShellFs : IDokanOperations
+public class PowerShellFs : IDokanOperations2
 {
     public Runspace Runspace { get; }
 
@@ -98,7 +99,7 @@ public class PowerShellFs : IDokanOperations
     {
     }
 
-    public NtStatus ReadFile(ReadOnlyNativeMemory<char> fileNamePtr, NativeMemory<byte> buffer, out int bytesRead, long offset, in DokanFileInfo info)
+    public NtStatus ReadFile(ReadOnlyNativeMemory<char> fileNamePtr, NativeMemory<byte> buffer, out int bytesRead, long offset, ref DokanFileInfo info)
     {
         var path = TranslatePath(fileNamePtr.Span);
 
@@ -172,15 +173,15 @@ public class PowerShellFs : IDokanOperations
         return NtStatus.Success;
     }
 
-    public NtStatus WriteFile(ReadOnlyNativeMemory<char> fileNamePtr, ReadOnlyNativeMemory<byte> buffer, out int bytesWritten, long offset, in DokanFileInfo info)
+    public NtStatus WriteFile(ReadOnlyNativeMemory<char> fileNamePtr, ReadOnlyNativeMemory<byte> buffer, out int bytesWritten, long offset, ref DokanFileInfo info)
     {
         bytesWritten = 0;
         return NtStatus.NotImplemented;
     }
 
-    public NtStatus FlushFileBuffers(ReadOnlyNativeMemory<char> fileNamePtr, in DokanFileInfo info) => NtStatus.Success;
+    public NtStatus FlushFileBuffers(ReadOnlyNativeMemory<char> fileNamePtr, ref DokanFileInfo info) => NtStatus.Success;
 
-    public NtStatus GetFileInformation(ReadOnlyNativeMemory<char> fileNamePtr, out ByHandleFileInformation fileInfo, in DokanFileInfo info)
+    public NtStatus GetFileInformation(ReadOnlyNativeMemory<char> fileNamePtr, out ByHandleFileInformation fileInfo, ref DokanFileInfo info)
     {
         var path = TranslatePath(fileNamePtr.Span);
 
@@ -244,7 +245,7 @@ public class PowerShellFs : IDokanOperations
         return NtStatus.Success;
     }
 
-    public NtStatus FindFiles(ReadOnlyNativeMemory<char> fileNamePtr, out IEnumerable<FindFileInformation> files, in DokanFileInfo info)
+    public NtStatus FindFiles(ReadOnlyNativeMemory<char> fileNamePtr, out IEnumerable<FindFileInformation> files, ref DokanFileInfo info)
         => FindFilesWithPattern(fileNamePtr, "*", out files);
 
     public static string TranslatePath(ReadOnlySpan<char> path)
@@ -274,7 +275,7 @@ public class PowerShellFs : IDokanOperations
     public NtStatus FindFilesWithPattern(ReadOnlyNativeMemory<char> fileNamePtr,
                                          ReadOnlyNativeMemory<char> searchPatternPtr,
                                          out IEnumerable<FindFileInformation> files,
-                                         in DokanFileInfo info)
+                                         ref DokanFileInfo info)
         => FindFilesWithPattern(fileNamePtr, searchPatternPtr.ToString().Replace('<', '*'), out files);
 
     public NtStatus FindFilesWithPattern(ReadOnlyNativeMemory<char> fileNamePtr,
@@ -288,78 +289,90 @@ public class PowerShellFs : IDokanOperations
             path = Path.Combine(path, searchPattern);
         }
 
-        lock (Runspace)
+        try
         {
-            using var ps = GetPS();
-
-            if (path.IndexOf(@":\", StringComparison.Ordinal) < 0 ||
-                path.EndsWith(@":\", StringComparison.Ordinal))
+            lock (Runspace)
             {
-                var drives = ps.AddCommand("Get-PSDrive").Invoke().Select(drive => drive.Properties["Name"].Value as string);
+                using var ps = GetPS();
 
-                if (fileNamePtr.Span.IndexOfAny('?', '*') >= 0)
+                if (path.IndexOf(@":\", StringComparison.Ordinal) < 0 ||
+                    path.EndsWith(@":\", StringComparison.Ordinal))
                 {
-                    if (Utilities.ConvertWildcardsToRegEx(fileNamePtr.Span.TrimStart('\\').ToString(), ignoreCase: true) is { } regx)
+                    var drives = ps
+                        .AddCommand("Get-PSDrive")
+                        .Invoke()
+                        .Select(drive => drive.Properties["Name"].Value)
+                        .OfType<string>();
+
+                    if (fileNamePtr.Span.IndexOfAny('?', '*') >= 0)
                     {
-                        drives = drives.Where(regx);
+                        if (Utilities.ConvertWildcardsToRegEx(fileNamePtr.Span.TrimStart('\\').ToString(), ignoreCase: true) is { } regx)
+                        {
+                            drives = drives.Where(regx);
+                        }
                     }
+
+                    if (searchPattern != "*")
+                    {
+                        if (Utilities.ConvertWildcardsToRegEx(searchPattern, ignoreCase: true) is { } regx)
+                        {
+                            drives = drives.Where(regx);
+                        }
+                    }
+
+                    files = drives.Select(drive => new FindFileInformation
+                    {
+                        Attributes = FileAttributes.Directory,
+                        FileName = drive.AsMemory()
+                    });
+
+                    return NtStatus.Success;
                 }
 
-                if (searchPattern != "*")
-                {
-                    if (Utilities.ConvertWildcardsToRegEx(searchPattern, ignoreCase: true) is { } regx)
-                    {
-                        drives = drives.Where(regx);
-                    }
-                }
+                var entries = ps.AddCommand("Get-Item").AddParameter("Path", path).Invoke().Select(obj => obj.Properties);
 
-                files = drives.Select(drive => new FindFileInformation
-                {
-                    Attributes = FileAttributes.Directory,
-                    FileName = drive.AsMemory()
-                });
+                files = entries
+                    .Where(obj => obj["PSChildName"]?.Value is string || obj["Name"]?.Value is string)
+                    .Select(finfo => new FindFileInformation
+                    {
+                        Attributes = Enum.TryParse<FileAttributes>(finfo["Attributes"]?.Value?.ToString(), out var attr) ? attr :
+                            finfo["PSIsContainer"]?.Value as bool? ?? false ? FileAttributes.Directory : FileAttributes.Normal,
+                        CreationTime = finfo["CreationTime"]?.Value as DateTime? ?? finfo["NotBefore"]?.Value as DateTime?,
+                        LastAccessTime = finfo["LastAccessTime"]?.Value as DateTime? ?? finfo["NotBefore"]?.Value as DateTime?,
+                        LastWriteTime = finfo["LastWriteTime"]?.Value as DateTime? ?? finfo["NotBefore"]?.Value as DateTime?,
+                        Length = finfo["Length"]?.Value as long? ?? (finfo["RawData"]?.Value as byte[])?.Length ?? (finfo["Value"]?.Value as string)?.Length ?? 0,
+                        FileName = (finfo["PSChildName"]?.Value as string ?? finfo["Name"]?.Value as string).AsMemory()
+                    });
 
                 return NtStatus.Success;
             }
-
-            var entries = ps.AddCommand("Get-Item").AddParameter("Path", path).Invoke().Select(obj => obj.Properties);
-
-            files = entries
-                .Where(obj => obj["PSChildName"]?.Value is string || obj["Name"]?.Value is string)
-                .Select(finfo => new FindFileInformation
-                {
-                    Attributes = Enum.TryParse<FileAttributes>(finfo["Attributes"]?.Value?.ToString(), out var attr) ? attr :
-                        finfo["PSIsContainer"]?.Value as bool? ?? false ? FileAttributes.Directory : FileAttributes.Normal,
-                    CreationTime = finfo["CreationTime"]?.Value as DateTime? ?? finfo["NotBefore"]?.Value as DateTime?,
-                    LastAccessTime = finfo["LastAccessTime"]?.Value as DateTime? ?? finfo["NotBefore"]?.Value as DateTime?,
-                    LastWriteTime = finfo["LastWriteTime"]?.Value as DateTime? ?? finfo["NotBefore"]?.Value as DateTime?,
-                    Length = finfo["Length"]?.Value as long? ?? (finfo["RawData"]?.Value as byte[])?.Length ?? (finfo["Value"]?.Value as string)?.Length ?? 0,
-                    FileName = (finfo["PSChildName"]?.Value as string ?? finfo["Name"]?.Value as string).AsMemory()
-                });
-
-            return NtStatus.Success;
+        }
+        catch (Exception ex)
+        {
+            files = [];
+            return DokanHelper.ToNtStatus(ex);
         }
     }
 
-    public NtStatus SetFileAttributes(ReadOnlyNativeMemory<char> fileNamePtr, FileAttributes attributes, in DokanFileInfo info) => NtStatus.NotImplemented;
+    public NtStatus SetFileAttributes(ReadOnlyNativeMemory<char> fileNamePtr, FileAttributes attributes, ref DokanFileInfo info) => NtStatus.NotImplemented;
 
-    public NtStatus SetFileTime(ReadOnlyNativeMemory<char> fileNamePtr, DateTime? creationTime, DateTime? lastAccessTime, DateTime? lastWriteTime, in DokanFileInfo info) => NtStatus.NotImplemented;
+    public NtStatus SetFileTime(ReadOnlyNativeMemory<char> fileNamePtr, DateTime? creationTime, DateTime? lastAccessTime, DateTime? lastWriteTime, ref DokanFileInfo info) => NtStatus.NotImplemented;
 
-    public NtStatus DeleteFile(ReadOnlyNativeMemory<char> fileNamePtr, in DokanFileInfo info) => NtStatus.NotImplemented;
+    public NtStatus DeleteFile(ReadOnlyNativeMemory<char> fileNamePtr, ref DokanFileInfo info) => NtStatus.NotImplemented;
 
-    public NtStatus DeleteDirectory(ReadOnlyNativeMemory<char> fileNamePtr, in DokanFileInfo info) => NtStatus.NotImplemented;
+    public NtStatus DeleteDirectory(ReadOnlyNativeMemory<char> fileNamePtr, ref DokanFileInfo info) => NtStatus.NotImplemented;
 
     public NtStatus MoveFile(ReadOnlyNativeMemory<char> oldName, ReadOnlyNativeMemory<char> newName, bool replace, ref DokanFileInfo info) => NtStatus.NotImplemented;
 
-    public NtStatus SetEndOfFile(ReadOnlyNativeMemory<char> fileNamePtr, long length, in DokanFileInfo info) => NtStatus.NotImplemented;
+    public NtStatus SetEndOfFile(ReadOnlyNativeMemory<char> fileNamePtr, long length, ref DokanFileInfo info) => NtStatus.NotImplemented;
 
-    public NtStatus SetAllocationSize(ReadOnlyNativeMemory<char> fileNamePtr, long length, in DokanFileInfo info) => NtStatus.NotImplemented;
+    public NtStatus SetAllocationSize(ReadOnlyNativeMemory<char> fileNamePtr, long length, ref DokanFileInfo info) => NtStatus.NotImplemented;
 
-    public NtStatus LockFile(ReadOnlyNativeMemory<char> fileNamePtr, long offset, long length, in DokanFileInfo info) => NtStatus.NotImplemented;
+    public NtStatus LockFile(ReadOnlyNativeMemory<char> fileNamePtr, long offset, long length, ref DokanFileInfo info) => NtStatus.NotImplemented;
 
-    public NtStatus UnlockFile(ReadOnlyNativeMemory<char> fileNamePtr, long offset, long length, in DokanFileInfo info) => NtStatus.NotImplemented;
+    public NtStatus UnlockFile(ReadOnlyNativeMemory<char> fileNamePtr, long offset, long length, ref DokanFileInfo info) => NtStatus.NotImplemented;
 
-    public NtStatus GetDiskFreeSpace(out long freeBytesAvailable, out long totalNumberOfBytes, out long totalNumberOfFreeBytes, in DokanFileInfo info)
+    public NtStatus GetDiskFreeSpace(out long freeBytesAvailable, out long totalNumberOfBytes, out long totalNumberOfFreeBytes, ref DokanFileInfo info)
     {
         freeBytesAvailable = 0;
         totalNumberOfBytes = 0;
@@ -367,7 +380,7 @@ public class PowerShellFs : IDokanOperations
         return NtStatus.Success;
     }
 
-    public NtStatus GetVolumeInformation(NativeMemory<char> volumeLabel, out FileSystemFeatures features, NativeMemory<char> fileSystemName, out uint maximumComponentLength, ref uint volumeSerialNumber, in DokanFileInfo info)
+    public NtStatus GetVolumeInformation(NativeMemory<char> volumeLabel, out FileSystemFeatures features, NativeMemory<char> fileSystemName, out uint maximumComponentLength, ref uint volumeSerialNumber, ref DokanFileInfo info)
     {
         volumeLabel.SetString("PowerShell");
         features = FileSystemFeatures.ReadOnlyVolume | FileSystemFeatures.UnicodeOnDisk;
@@ -376,19 +389,19 @@ public class PowerShellFs : IDokanOperations
         return NtStatus.Success;
     }
 
-    public NtStatus GetFileSecurity(ReadOnlyNativeMemory<char> fileNamePtr, out FileSystemSecurity security, AccessControlSections sections, in DokanFileInfo info)
+    public NtStatus GetFileSecurity(ReadOnlyNativeMemory<char> fileNamePtr, out FileSystemSecurity security, AccessControlSections sections, ref DokanFileInfo info)
     {
         security = null!;
         return NtStatus.NotImplemented;
     }
 
-    public NtStatus SetFileSecurity(ReadOnlyNativeMemory<char> fileNamePtr, FileSystemSecurity security, AccessControlSections sections, in DokanFileInfo info) => NtStatus.NotImplemented;
+    public NtStatus SetFileSecurity(ReadOnlyNativeMemory<char> fileNamePtr, FileSystemSecurity security, AccessControlSections sections, ref DokanFileInfo info) => NtStatus.NotImplemented;
 
-    public NtStatus Mounted(ReadOnlyNativeMemory<char> drive, in DokanFileInfo info) => NtStatus.Success;
+    public NtStatus Mounted(ReadOnlyNativeMemory<char> drive, ref DokanFileInfo info) => NtStatus.Success;
 
-    public NtStatus Unmounted(in DokanFileInfo info) => NtStatus.Success;
+    public NtStatus Unmounted(ref DokanFileInfo info) => NtStatus.Success;
 
-    public NtStatus FindStreams(ReadOnlyNativeMemory<char> fileNamePtr, out IEnumerable<FindFileInformation> streams, in DokanFileInfo info)
+    public NtStatus FindStreams(ReadOnlyNativeMemory<char> fileNamePtr, out IEnumerable<FindFileInformation> streams, ref DokanFileInfo info)
     {
         streams = null!;
         return NtStatus.NotImplemented;

@@ -13,7 +13,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.PowerShell.5.ReferenceAssemblies" Version="1.1.0" />
     <PackageReference Include="System.Memory" Version="4.6.*" />
-    <PackageReference Include="LTRData.DokanNet" Version="*" />
+    <PackageReference Include="DokanNet" Version="*" />
     <PackageReference Include="LTRData.DiscUtils.Core" Version="*" />
   </ItemGroup>
 
