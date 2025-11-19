@@ -1,0 +1,24 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Build.props" />
+  </Folder>
+  <Project Path="AppxActivate/AppxActivate.csproj" />
+  <Project Path="Dataviewer/Dataviewer.vbproj" />
+  <Project Path="DiskVolumes/DiskVolumes.csproj" />
+  <Project Path="dssearch/dssearch.csproj" />
+  <Project Path="GetProductKey/GetProductKey.csproj" />
+  <Project Path="ImageMBR2GPT/ImageMBR2GPT.csproj" />
+  <Project Path="ipcalc/ipcalc.csproj" />
+  <Project Path="PowerShellFs/PowerShellFs.csproj" />
+  <Project Path="RecentCleanup/RecentCleanup.csproj" />
+  <Project Path="SessionPowerSaver/SessionPowerSaver.csproj" />
+  <Project Path="StripeBlockSwap/StripeBlockSwap.csproj" />
+  <Project Path="telnets/telnets.csproj" />
+  <Project Path="waitps/waitps.csproj" />
+  <Project Path="waitwin/waitwin.csproj" />
+</Solution>

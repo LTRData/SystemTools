@@ -1,8 +1,6 @@
 ﻿using LTRData.Extensions.Buffers;
+using LTRData.Extensions.Collections;
 using LTRData.Extensions.Formatting;
-using LTRLib.Extensions;
-using LTRLib.IO;
-using LTRLib.LTRGeneric;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -43,7 +41,7 @@ public static class Program
 
     public static int Main(params string[] args)
     {
-        var dispobjs = new DisposableList<IDisposable>();
+        using var dispobjs = new DisposableList();
 
         try
         {
@@ -70,9 +68,12 @@ public static class Program
 
             Console.WriteLine($"Connecting to '{remote_host}' at port {remote_port}");
 
-            var remote_socket = IOSupport.OpenTcpIpSocket(remote_host, remote_port);
-            remote_socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.NoDelay, true);
-            var remote_raw_stream = new NetworkStream(remote_socket);
+            var remote = new TcpClient(remote_host, remote_port)
+            {
+                NoDelay = true
+            };
+
+            var remote_raw_stream = remote.GetStream();
 
             dispobjs.Add(remote_raw_stream);
 
@@ -127,7 +128,7 @@ public static class Program
             var threads = new List<Thread>
             {
                 CreateForwarder("Inbound", remote_stream, local_stream, () => local_socket.Shutdown(SocketShutdown.Send)),
-                CreateForwarder("Outbound", local_stream, remote_stream, () => remote_socket.Shutdown(SocketShutdown.Send))
+                CreateForwarder("Outbound", local_stream, remote_stream, () => remote.Client.Shutdown(SocketShutdown.Send))
             };
             threads.ForEach(t => t.Start());
 
@@ -141,10 +142,6 @@ public static class Program
         {
             WriteError(ex.JoinMessages());
             return 1;
-        }
-        finally
-        {
-            dispobjs.Dispose();
         }
     }
 

@@ -9,8 +9,11 @@
     <Copyright>Copyright © LTR Data, Olof Lagerkvist 2015-2022</Copyright>
   </PropertyGroup>
 
+  <ItemGroup>
+	<PackageReference Include="LTRData.Extensions" Version="*" />
+  </ItemGroup>
+  
   <ItemGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'netcoreapp3.1'))">
-    <PackageReference Include="LTRLib40" Version="*" />
     <Reference Include="System.DirectoryServices" />
     <Reference Include="System.DirectoryServices.AccountManagement" />
   </ItemGroup>

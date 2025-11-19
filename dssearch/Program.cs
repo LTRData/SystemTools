@@ -1,7 +1,5 @@
-﻿#if NETFRAMEWORK
-using LTRData.Extensions.Buffers;
-using LTRLib.Extensions;
-#endif
+﻿using LTRData.Extensions.Buffers;
+using LTRData.Extensions.Formatting;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,17 +13,6 @@ namespace dssearch;
 
 public static class ActiveDirectoryInfo
 {
-    static IEnumerable<string> EnumerateMessages(this Exception? ex)
-    {
-        while (ex is not null)
-        {
-            yield return ex.Message;
-            ex = ex.InnerException;
-        }
-
-        yield break;
-    }
-
     public static int Main(string[] args)
     {
         try
@@ -35,7 +22,7 @@ public static class ActiveDirectoryInfo
         catch (Exception ex)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.Error.WriteLine(string.Join(" -> ", ex.EnumerateMessages().ToArray()));
+            Console.Error.WriteLine(ex.JoinMessages());
             Console.ResetColor();
             return -1;
         }
@@ -52,11 +39,8 @@ public static class ActiveDirectoryInfo
         {
             if (arg.StartsWith("LDAP://", StringComparison.OrdinalIgnoreCase))
             {
-                if (entry is not null)
-                {
-                    entry.Dispose();
-                    entry = null;
-                }
+                entry?.Dispose();
+                entry = null;
 
                 entry = new DirectoryEntry(arg);
             }

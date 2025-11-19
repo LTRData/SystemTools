@@ -1,7 +1,7 @@
 ﻿using LTRData.Extensions.Buffers;
 using LTRData.Extensions.Formatting;
 using LTRData.Extensions.Split;
-using LTRLib.Net;
+using LTRData.Net;
 using System;
 using System.Net;
 using System.Net.Sockets;

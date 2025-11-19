@@ -6,7 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LTRLib40" Version="*" />
+	<PackageReference Include="LTRData.Extensions" Version="*" />
+	<PackageReference Include="LTRData.Net" Version="*" />
   </ItemGroup>
   
 </Project>
