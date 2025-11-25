@@ -16,19 +16,8 @@ public static class Program
 {
     static Program()
     {
-        var asms = new[]
-        {
-            typeof(DiscUtils.Vhd.Disk).Assembly,
-            typeof(DiscUtils.Vhdx.Disk).Assembly,
-            typeof(DiscUtils.Vmdk.Disk).Assembly,
-            typeof(DiscUtils.Vdi.Disk).Assembly,
-            typeof(DiscUtils.Dmg.Disk).Assembly
-        };
-
-        foreach (var asm in asms.Distinct())
-        {
-            DiscUtils.Setup.SetupHelper.RegisterAssembly(asm);
-        }
+        DiscUtils.Containers.SetupHelper.SetupContainers();
+        DiscUtils.Transports.SetupHelper.SetupTransports();
     }
 
     public static int Main(params string[] args)
@@ -86,7 +75,7 @@ public static class Program
             else
             { 
                 Console.WriteLine(@"ImageMBR2GPT
-Copyright (c) 2023 - 2024 Olof Lagerkvist, LTR Data, https://ltr-data.se
+Copyright (c) 2023 - 2025 Olof Lagerkvist, LTR Data, https://ltr-data.se
 
 Tool for in-place conversion between MBR and GPT partition table formats.
 Writes a new partition table with the same partition extents as in existing

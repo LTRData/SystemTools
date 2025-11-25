@@ -8,13 +8,8 @@
   <ItemGroup>
     <PackageReference Include="LTRData.Extensions" Version="*" />
     <PackageReference Include="LTRLib.NativeIo" Version="*" />
-    <PackageReference Include="LTRData.DiscUtils.Core" Version="*" />
-    <PackageReference Include="LTRData.DiscUtils.Streams" Version="*" />
-    <PackageReference Include="LTRData.DiscUtils.Dmg" Version="*" />
-    <PackageReference Include="LTRData.DiscUtils.Vdi" Version="*" />
-    <PackageReference Include="LTRData.DiscUtils.Vhd" Version="*" />
-    <PackageReference Include="LTRData.DiscUtils.Vhdx" Version="*" />
-    <PackageReference Include="LTRData.DiscUtils.Vmdk" Version="*" />
+    <PackageReference Include="LTRData.DiscUtils.Containers" Version="*" />
+    <PackageReference Include="LTRData.DiscUtils.Transports" Version="*" />
   </ItemGroup>
 
 </Project>

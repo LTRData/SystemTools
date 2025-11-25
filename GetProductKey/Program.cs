@@ -28,38 +28,7 @@ public static class Program
 
     static Program()
     {
-        var asms = new[]
-        {
-            typeof(DiscUtils.Fat.FatFileSystem).Assembly,
-            typeof(DiscUtils.Ntfs.NtfsFileSystem).Assembly,
-            typeof(DiscUtils.Udf.UdfReader).Assembly,
-            typeof(DiscUtils.Iso9660.CDReader).Assembly,
-            typeof(DiscUtils.Wim.WimFileSystem).Assembly,
-            typeof(DiscUtils.Dmg.Disk).Assembly,
-            typeof(DiscUtils.Vmdk.Disk).Assembly,
-            typeof(DiscUtils.Vdi.Disk).Assembly,
-            typeof(DiscUtils.Vhd.Disk).Assembly,
-            typeof(DiscUtils.Vhdx.Disk).Assembly
-        };
-        foreach (var asm in asms.Distinct())
-        {
-            try
-            {
-                DiscUtils.Setup.SetupHelper.RegisterAssembly(asm);
-            }
-            catch (TypeInitializationException ex) when (ex.GetBaseException() is ReflectionTypeLoadException rtle)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.Error.WriteLine($"Failed to load {asm}: {rtle.LoaderExceptions.First()?.GetBaseException().Message}");
-                Console.ResetColor();
-            }
-            catch (Exception ex)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.Error.WriteLine($"Failed to load {asm}: {ex.GetType().Name}: {ex.GetBaseException().Message}");
-                Console.ResetColor();
-            }
-        }
+        DiscUtils.Complete.SetupHelper.SetupComplete();
     }
 
     private static string FormatMessage(this Exception ex) =>
@@ -93,7 +62,7 @@ public static class Program
         {
             Console.WriteLine(@"GetProductKey
 A tool to show Windows installation information including product key.
-Copyright (c) Olof Lagerkvist, LTR Data, 2021-2022
+Copyright (c) Olof Lagerkvist, LTR Data, 2021-2025
 http://ltr-data.se  https://github.com/LTRData
 
 Syntax to query current machine (Windows only):
@@ -234,10 +203,10 @@ GetProductKey /path/windows_setup.iso");
                             }));
                         }
                     }
-                    else if (File.Exists(arg))
+                    else
                     {
                         var image = VirtualDisk.OpenDisk(arg, FileAccess.Read)
-                            ?? new DiscUtils.Raw.Disk(arg, FileAccess.Read);
+                            ?? (File.Exists(arg) ? new DiscUtils.Raw.Disk(arg, FileAccess.Read) : throw new FileNotFoundException($"File '{arg}' not found"));
 
                         disposables.Add(image);
 
@@ -254,10 +223,6 @@ GetProductKey /path/windows_setup.iso");
                                 }
                             }));
                         }
-                    }
-                    else
-                    {
-                        throw new FileNotFoundException($"File '{arg}' not found");
                     }
                 }
                 catch (Exception ex)
@@ -368,9 +333,7 @@ GetProductKey /path/windows_setup.iso");
 
     public static IEnumerable<KeyValuePair<int, DiscFileInfo>> EnumerateVirtualDiskImageFileSystems(this VirtualDisk image)
     {
-        var partitions = image.Partitions;
-
-        if (partitions is not null && partitions.Count > 0)
+        if (image.Partitions is { Count: > 0 } partitions)
         {
             for (var i = 0; i < partitions.Count; i++)
             {

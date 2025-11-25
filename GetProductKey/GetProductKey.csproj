@@ -7,20 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LTRData.DiscUtils.Core" Version="*" />
-    <PackageReference Include="LTRData.DiscUtils.Dmg" Version="*" />
-    <PackageReference Include="LTRData.DiscUtils.Fat" Version="*" />
-    <PackageReference Include="LTRData.DiscUtils.Iso9660" Version="*" />
-    <PackageReference Include="LTRData.DiscUtils.Ntfs" Version="*" />
-    <PackageReference Include="LTRData.DiscUtils.Registry" Version="*" />
-    <PackageReference Include="LTRData.DiscUtils.Streams" Version="*" />
-    <PackageReference Include="LTRData.DiscUtils.Udf" Version="*" />
-    <PackageReference Include="LTRData.DiscUtils.Vdi" Version="*" />
-    <PackageReference Include="LTRData.DiscUtils.Vhd" Version="*" />
-    <PackageReference Include="LTRData.DiscUtils.Vhdx" Version="*" />
-    <PackageReference Include="LTRData.DiscUtils.Vmdk" Version="*" />
-    <PackageReference Include="LTRData.DiscUtils.Wim" Version="*" />
-    <PackageReference Include="LTRData.DiscUtils.Xva" Version="*" />
+    <PackageReference Include="LTRData.DiscUtils" Version="*" />
     <PackageReference Include="Microsoft.Management.Infrastructure" Version="3.*" />
   </ItemGroup>
 
