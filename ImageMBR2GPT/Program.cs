@@ -75,7 +75,7 @@ public static class Program
             else
             { 
                 Console.WriteLine(@"ImageMBR2GPT
-Copyright (c) 2023 - 2025 Olof Lagerkvist, LTR Data, https://ltr-data.se
+Copyright (c) 2023 - 2026 Olof Lagerkvist, LTR Data, https://ltr-data.se
 
 Tool for in-place conversion between MBR and GPT partition table formats.
 Writes a new partition table with the same partition extents as in existing

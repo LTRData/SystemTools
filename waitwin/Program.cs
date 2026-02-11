@@ -38,7 +38,7 @@ public static partial class Program
                     break;
 
                 default:
-                    Console.WriteLine($@"Window wait utility - Copyright (c) 2025 Olof Lagerkvist, LTR Data
+                    Console.WriteLine($@"Window wait utility - Copyright (c) 2025-2026 Olof Lagerkvist, LTR Data
 https://ltr-data.se/opencode.html
 
 Syntax:

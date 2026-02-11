@@ -62,7 +62,7 @@ public static class Program
         {
             Console.WriteLine(@"GetProductKey
 A tool to show Windows installation information including product key.
-Copyright (c) Olof Lagerkvist, LTR Data, 2021-2025
+Copyright (c) Olof Lagerkvist, LTR Data, 2021-2026
 http://ltr-data.se  https://github.com/LTRData
 
 Syntax to query current machine (Windows only):

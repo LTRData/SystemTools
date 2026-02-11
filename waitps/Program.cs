@@ -33,7 +33,7 @@ public static class Program
                     break;
 
                 default:
-                    Console.WriteLine($@"Process wait utility - Copyright (c) 2024-2025 Olof Lagerkvist, LTR Data
+                    Console.WriteLine($@"Process wait utility - Copyright (c) 2024-2026 Olof Lagerkvist, LTR Data
 https://ltr-data.se/opencode.html
 
 Syntax:
