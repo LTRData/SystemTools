@@ -6,6 +6,7 @@
     <TargetFrameworks>net10.0-windows;net9.0-windows;net8.0-windows;net20;net40</TargetFrameworks>
     <RootNamespace>LTR.DataViewer</RootNamespace>
     <UseWindowsForms>true</UseWindowsForms>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
   </PropertyGroup>
 
   <PropertyGroup>

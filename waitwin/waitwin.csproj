@@ -7,6 +7,7 @@
     <UseWPF>true</UseWPF>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
 
