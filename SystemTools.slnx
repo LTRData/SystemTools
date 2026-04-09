@@ -8,7 +8,6 @@
     <File Path="Directory.Build.props" />
   </Folder>
   <Project Path="AppxActivate/AppxActivate.csproj" />
-  <Project Path="Dataviewer/Dataviewer.vbproj" />
   <Project Path="DiskVolumes/DiskVolumes.csproj" />
   <Project Path="dssearch/dssearch.csproj" />
   <Project Path="GetProductKey/GetProductKey.csproj" />
